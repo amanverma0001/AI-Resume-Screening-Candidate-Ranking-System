@@ -1,0 +1,24 @@
+Job Title: Senior Python Backend Developer
+Location: Bangalore / Remote
+Experience Required: 2+ years
+Education: B.Tech / B.E / M.Tech in Computer Science or equivalent
+
+About the Role:
+We are looking for an experienced Senior Python Backend Developer to design, build, and maintain high-performance, scalable web services and APIs for our cloud platform.
+
+Key Responsibilities:
+- Architect and develop robust backend microservices using Python, FastAPI, and Django.
+- Design and optimize relational and NoSQL databases including PostgreSQL, Redis, and MongoDB.
+- Build and maintain RESTful APIs and asynchronous task processing pipelines using Celery and RabbitMQ.
+- Deploy and manage scalable containerized services using Docker, Kubernetes, and AWS (EC2, S3, RDS, Lambda).
+- Implement CI/CD pipelines with GitHub Actions for automated testing and deployment.
+- Write clean, maintainable, and well-tested code using PyTest.
+- Collaborate with frontend teams and product managers in an Agile/Scrum environment.
+
+Requirements & Skills:
+- 4+ years of professional backend software development experience.
+- Strong proficiency in Python, FastAPI, Django, Flask.
+- Expertise in PostgreSQL, Redis, SQL query optimization, and database design.
+- Hands-on experience with Docker, Kubernetes, CI/CD, AWS Cloud.
+- Strong knowledge of Git, Linux, Unit Testing (PyTest), and Microservices architecture.
+- Excellent problem-solving, communication, and system design skills.

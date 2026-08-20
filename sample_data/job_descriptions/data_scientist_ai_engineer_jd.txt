@@ -1,0 +1,23 @@
+Job Title: Data Scientist & AI / Machine Learning Engineer
+Location: Hyderabad / Hybrid
+Experience Required: 4+ years
+Education: B.Tech / M.Tech / M.Sc in Computer Science, Data Science, Statistics or related field
+
+About the Role:
+We are seeking an innovative Data Scientist & AI Engineer to build predictive machine learning models, NLP pipelines, and generative AI solutions.
+
+Key Responsibilities:
+- Design, train, and deploy machine learning and deep learning models using PyTorch, TensorFlow, and Scikit-Learn.
+- Develop Natural Language Processing (NLP) solutions, LLM applications using LangChain, RAG, and HuggingFace Transformers.
+- Perform exploratory data analysis, feature engineering, and statistical modeling using Pandas, NumPy, and Scipy.
+- Build vector search and retrieval pipelines using FAISS, ChromaDB, and Pinecone.
+- Deploy ML models as REST APIs using FastAPI, Docker, and AWS / GCP.
+- Monitor model performance and data drift in production.
+
+Requirements & Skills:
+- 3+ years of experience in Data Science, Machine Learning, and NLP.
+- Strong programming skills in Python, SQL.
+- Deep expertise in PyTorch, TensorFlow, Scikit-Learn, Pandas, NumPy, Spacy, NLTK.
+- Experience with Generative AI, LLMs, RAG, LangChain, Transformers, BERT.
+- Familiarity with Vector Databases (FAISS, ChromaDB), Docker, and Git.
+- Strong background in Mathematics, Statistics, and Data Visualization.
