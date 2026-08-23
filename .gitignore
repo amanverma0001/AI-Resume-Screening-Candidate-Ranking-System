@@ -16,3 +16,4 @@ Thumbs.db
 # Antigravity / IDE scratch
 scratch/
 .system_generated/
+.vercel
