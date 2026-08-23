@@ -1,4 +1,4 @@
-/* Streamlit Dataframe Native Grid Styling for Vercel Web App */
+/* Exact Streamlit app.py Pixel-Perfect CSS System */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
@@ -23,7 +23,7 @@
 
 body {
   font-family: var(--font);
-  background-color: var(--bg-main);
+  background-color: #0E1117 !important;
   color: #F8FAFC;
   min-height: 100vh;
   display: flex;
@@ -33,7 +33,7 @@ body {
 /* Sidebar Styling */
 .app-sidebar {
   width: 320px;
-  background-color: var(--bg-sidebar);
+  background-color: #141720;
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   padding: 1.5rem;
   display: flex;
@@ -135,8 +135,8 @@ body {
 
 /* Sidebar Expander */
 .accordion {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
   margin-bottom: 1.25rem;
   overflow: hidden;
@@ -188,6 +188,7 @@ body {
   flex: 1;
   padding: 2rem 2.5rem;
   overflow-y: auto;
+  background-color: #0E1117 !important;
 }
 
 /* Animated Header Banner */
@@ -368,7 +369,7 @@ body {
 .select-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: #151A24;
+  background: #161B26;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   color: #F9FAFB;
@@ -385,16 +386,10 @@ body {
   position: relative;
 }
 
-.search-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
 .search-input {
   width: 100%;
-  padding: 0.75rem 2.5rem 0.75rem 1rem;
-  background: #151A24;
+  padding: 0.75rem 1rem;
+  background: #161B26;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
   color: #F8FAFC;
@@ -405,14 +400,6 @@ body {
 
 .search-input:focus {
   border-color: #6366F1;
-}
-
-.help-icon {
-  position: absolute;
-  right: 12px;
-  color: #64748B;
-  font-size: 0.85rem;
-  cursor: help;
 }
 
 /* Exact Streamlit st.dataframe Grid Table Styling */
