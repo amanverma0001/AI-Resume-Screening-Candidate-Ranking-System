@@ -2,16 +2,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg-main: #0B0F19;
-  --bg-sidebar: #111827;
-  --bg-card: #FFFFFF;
-  --text-dark: #0F172A;
-  --text-muted: #64748B;
-  --primary: #4F46E5;
-  --purple: #8B5CF6;
+  --bg-main: #0E131F;
+  --bg-sidebar: #131927;
+  --bg-card: #182032;
+  --text-main: #F8FAFC;
+  --text-muted: #94A3B8;
+  --primary: #6366F1;
   --accent: #0EA5E9;
   --success: #10B981;
-  --warning: #F59E0B;
   --danger: #EF4444;
   --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -25,7 +23,7 @@
 body {
   font-family: var(--font);
   background-color: var(--bg-main);
-  color: #F8FAFC;
+  color: var(--text-main);
   min-height: 100vh;
   display: flex;
   overflow-x: hidden;
@@ -369,7 +367,7 @@ body {
 .select-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: #1F2937;
+  background: #19202E;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   color: #F9FAFB;
@@ -388,7 +386,7 @@ body {
 .search-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: #1E293B;
+  background: #19202E;
   border: 1px solid rgba(99, 102, 241, 0.3);
   border-radius: 10px;
   color: #F8FAFC;
@@ -401,83 +399,92 @@ body {
   border-color: #6366F1;
 }
 
-/* Data Table */
+/* Exact Streamlit Table Styling (Matching 1st Screenshot) */
 .data-table-wrapper {
   overflow-x: auto;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #111827;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #131825;
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
+  color: #E2E8F0;
 }
 
 .data-table th {
-  background: #1E293B;
-  color: #94A3B8;
-  padding: 0.85rem 1rem;
-  font-weight: 700;
+  background: #1B2130;
+  color: #8A99AD;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
 }
 
 .data-table td {
-  padding: 0.85rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  color: #E2E8F0;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  white-space: nowrap;
   vertical-align: middle;
 }
 
-/* Progress bar inside table */
-.progress-bar-bg {
-  width: 100%;
+.data-table tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Progress Bar inside Table */
+.table-score-bar-bg {
+  width: 90px;
   height: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 4px;
   overflow: hidden;
   display: inline-block;
-  margin-right: 6px;
   vertical-align: middle;
+  margin-right: 8px;
 }
 
-.progress-bar-fill {
+.table-score-bar-fill {
   height: 100%;
-  background: #EF4444;
+  background: #F87171;
   border-radius: 4px;
 }
 
-/* Badges & Tags */
-.fit-tag-strong {
-  background: #10B981;
-  color: white;
-  padding: 4px 12px;
-  border-radius: 8px;
-  font-weight: 700;
+/* Shortlisted Status Badge (Exact Screenshot 1) */
+.badge-shortlisted-true {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 2px 8px;
+  border-radius: 6px;
   font-size: 0.82rem;
-  display: inline-block;
+  font-weight: 700;
 }
 
-.fit-tag-mod {
-  background: #F59E0B;
-  color: white;
-  padding: 4px 12px;
-  border-radius: 8px;
-  font-weight: 700;
+.badge-shortlisted-false {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 2px 8px;
+  border-radius: 6px;
   font-size: 0.82rem;
-  display: inline-block;
+  font-weight: 700;
 }
 
-.fit-tag-low {
-  background: #EF4444;
-  color: white;
-  padding: 4px 12px;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.82rem;
-  display: inline-block;
+/* Plain Text Fit Status (Exact Screenshot 1) */
+.fit-status-text {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #E2E8F0;
 }
 
 .badge-matched {
@@ -525,7 +532,7 @@ body {
 
 .btn-export {
   padding: 0.75rem 1rem;
-  background: #1E293B;
+  background: #19202E;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   color: #F8FAFC;
@@ -537,7 +544,7 @@ body {
 }
 
 .btn-export:hover {
-  background: #334155;
+  background: #252D40;
   border-color: #6366F1;
 }
 

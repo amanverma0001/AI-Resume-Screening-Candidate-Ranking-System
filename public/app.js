@@ -246,11 +246,12 @@ Requirements: Python, Django, FastAPI, Flask, REST APIs, PostgreSQL, Redis, Dock
 
         list.forEach(c => {
             const isShortlisted = c.final_score >= cutoff;
-            const shortTag = isShortlisted ? `<span style="color: #10B981; font-weight: 700;">✅ Shortlisted</span>` : `<span style="color: #EF4444; font-weight: 700;">❌ Below Cutoff</span>`;
+            const shortTag = isShortlisted 
+                ? `<span class="badge-shortlisted-true">✅ Shortlisted</span>` 
+                : `<span class="badge-shortlisted-false">❌ Below Cutoff</span>`;
 
-            let fitClass = "fit-tag-low";
-            if (c.fit_status === "Strong Fit") fitClass = "fit-tag-strong";
-            else if (c.fit_status === "Moderate Fit") fitClass = "fit-tag-mod";
+            const expStr = typeof c.experience_years === "number" ? `${c.experience_years.toFixed(1)} yrs` : `${c.experience_years} yrs`;
+            const reqSkillsCount = (currentJdProfile && currentJdProfile.required_skills) ? currentJdProfile.required_skills.length : 31;
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
@@ -258,16 +259,16 @@ Requirements: Python, Django, FastAPI, Flask, REST APIs, PostgreSQL, Redis, Dock
                 <td><strong>${c.candidate_name}</strong></td>
                 <td>
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <div class="progress-bar-bg" style="width: 100px;">
-                            <div class="progress-bar-fill" style="width: ${c.final_score}%;"></div>
+                        <div class="table-score-bar-bg">
+                            <div class="table-score-bar-fill" style="width: ${c.final_score}%;"></div>
                         </div>
-                        <strong style="font-size: 0.9rem;">${c.final_score}%</strong>
+                        <strong style="font-size: 0.88rem;">${c.final_score}%</strong>
                     </div>
                 </td>
                 <td>${shortTag}</td>
-                <td><span class="${fitClass}">${c.fit_status}</span></td>
-                <td>${c.matched_skills.length} / ${currentJdProfile.required_skills ? currentJdProfile.required_skills.length : 31}</td>
-                <td>${c.experience_years} yrs</td>
+                <td><span class="fit-status-text">${c.fit_status}</span></td>
+                <td>${c.matched_skills.length} / ${reqSkillsCount}</td>
+                <td>${expStr}</td>
                 <td>${c.education.join(", ")}</td>
                 <td>${c.email}</td>
             `;
