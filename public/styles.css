@@ -1,13 +1,14 @@
-/* Exact Match CSS Design System for AI Resume Screening System */
+/* Exact Streamlit app.py CSS System */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg-main: #0E131F;
-  --bg-sidebar: #131927;
-  --bg-card: #182032;
-  --text-main: #F8FAFC;
-  --text-muted: #94A3B8;
-  --primary: #6366F1;
+  --bg-main: #0E1117;
+  --bg-sidebar: #141720;
+  --bg-card: #FFFFFF;
+  --text-dark: #0F172A;
+  --text-muted: #64748B;
+  --primary: #4F46E5;
+  --purple: #8B5CF6;
   --accent: #0EA5E9;
   --success: #10B981;
   --danger: #EF4444;
@@ -23,7 +24,7 @@
 body {
   font-family: var(--font);
   background-color: var(--bg-main);
-  color: var(--text-main);
+  color: #F8FAFC;
   min-height: 100vh;
   display: flex;
   overflow-x: hidden;
@@ -292,7 +293,7 @@ body {
   padding: 22px 24px;
   animation: kpiPulseGlow 4s infinite ease-in-out;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  color: #0F172A;
+  color: #0F172A !important;
 }
 
 .kpi-card:hover {
@@ -305,7 +306,7 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #64748B;
+  color: #64748B !important;
   opacity: 0.8;
   margin-bottom: 4px;
 }
@@ -313,12 +314,12 @@ body {
 .kpi-value {
   font-size: 1.9rem;
   font-weight: 800;
-  color: #0F172A;
+  color: #0F172A !important;
 }
 
 .kpi-sub {
   font-size: 0.8rem;
-  color: #94A3B8;
+  color: #94A3B8 !important;
   opacity: 0.75;
   margin-top: 4px;
 }
@@ -367,7 +368,7 @@ body {
 .select-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: #19202E;
+  background: #181E29;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   color: #F9FAFB;
@@ -386,7 +387,7 @@ body {
 .search-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: #19202E;
+  background: #181E29;
   border: 1px solid rgba(99, 102, 241, 0.3);
   border-radius: 10px;
   color: #F8FAFC;
@@ -399,12 +400,12 @@ body {
   border-color: #6366F1;
 }
 
-/* Exact Streamlit Table Styling (Matching 1st Screenshot) */
+/* Exact Streamlit Table Styling (Matching Screenshot 2) */
 .data-table-wrapper {
   overflow-x: auto;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #131825;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #111827;
 }
 
 .data-table {
@@ -416,8 +417,8 @@ body {
 }
 
 .data-table th {
-  background: #1B2130;
-  color: #8A99AD;
+  background: #1F2937;
+  color: #9CA3AF;
   padding: 0.75rem 1rem;
   font-weight: 600;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -426,7 +427,7 @@ body {
 
 .data-table td {
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   white-space: nowrap;
   vertical-align: middle;
 }
@@ -453,7 +454,7 @@ body {
   border-radius: 4px;
 }
 
-/* Shortlisted Status Badge (Exact Screenshot 1) */
+/* Shortlisted Status Badge */
 .badge-shortlisted-true {
   display: inline-flex;
   align-items: center;
@@ -480,7 +481,7 @@ body {
   font-weight: 700;
 }
 
-/* Plain Text Fit Status (Exact Screenshot 1) */
+/* Plain Text Fit Status */
 .fit-status-text {
   font-weight: 600;
   font-size: 0.88rem;
@@ -532,7 +533,7 @@ body {
 
 .btn-export {
   padding: 0.75rem 1rem;
-  background: #19202E;
+  background: #181E29;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   color: #F8FAFC;
