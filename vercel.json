@@ -1,22 +1,10 @@
 {
-  "builds": [
+  "version": 2,
+  "redirects": [
     {
-      "src": "api/index.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "api/index.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "public/$1"
+      "source": "/(.*)",
+      "destination": "https://resume-screener-amandeep.streamlit.app/$1",
+      "permanent": true
     }
   ]
 }
