@@ -1,12 +1,12 @@
-/* Exact Streamlit app.py CSS System */
+/* Streamlit Dataframe Native Grid Styling for Vercel Web App */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
   --bg-main: #0E1117;
   --bg-sidebar: #141720;
   --bg-card: #FFFFFF;
-  --text-dark: #0F172A;
-  --text-muted: #64748B;
+  --text-main: #F8FAFC;
+  --text-muted: #94A3B8;
   --primary: #4F46E5;
   --purple: #8B5CF6;
   --accent: #0EA5E9;
@@ -368,7 +368,7 @@ body {
 .select-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: #181E29;
+  background: #151A24;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   color: #F9FAFB;
@@ -379,16 +379,23 @@ body {
   outline: none;
 }
 
-/* Search Bar */
+/* Search Bar Container */
 .search-bar-container {
   margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  background: #181E29;
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  background: #151A24;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
   color: #F8FAFC;
   font-family: var(--font);
@@ -400,12 +407,20 @@ body {
   border-color: #6366F1;
 }
 
-/* Exact Streamlit Table Styling (Matching Screenshot 2) */
+.help-icon {
+  position: absolute;
+  right: 12px;
+  color: #64748B;
+  font-size: 0.85rem;
+  cursor: help;
+}
+
+/* Exact Streamlit st.dataframe Grid Table Styling */
 .data-table-wrapper {
   overflow-x: auto;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #111827;
+  background: #0E1117;
 }
 
 .data-table {
@@ -417,23 +432,34 @@ body {
 }
 
 .data-table th {
-  background: #1F2937;
-  color: #9CA3AF;
+  background: #161B26;
+  color: #94A3B8;
   padding: 0.75rem 1rem;
   font-weight: 600;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
   white-space: nowrap;
+}
+
+.data-table th:last-child {
+  border-right: none;
 }
 
 .data-table td {
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
   white-space: nowrap;
   vertical-align: middle;
+  background: #121722;
 }
 
-.data-table tr:hover {
-  background: rgba(255, 255, 255, 0.03);
+.data-table td:last-child {
+  border-right: none;
+}
+
+.data-table tr:hover td {
+  background: #19202E;
 }
 
 /* Progress Bar inside Table */
