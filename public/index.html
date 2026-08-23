@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Screening & Candidate Ranking System</title>
+    <meta name="description" content="NLP-Powered Candidate Ranking & Resume Screening System deployed on Vercel.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Plotly JS -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="brand">
+            <div class="brand-icon">🎯</div>
+            <div class="brand-text">
+                <h1>AI Resume Screening System</h1>
+                <p>NLP-Powered Candidate Ranking Engine</p>
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <div class="badge-vercel">
+                <svg width="12" height="12" viewBox="0 0 116 100" fill="none">
+                    <path d="M57.5 0L115 100H0L57.5 0Z" fill="currentColor" />
+                </svg>
+                Deployed on Vercel
+            </div>
+
+            <button id="btn-demo-load" class="btn btn-secondary" title="Load pre-configured sample JD & 10 resumes">
+                ⚡ 1-Click Live Demo
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        <div class="grid-main">
+
+            <!-- Sidebar Controls -->
+            <aside class="sidebar">
+
+                <!-- Scoring Weights Config Card -->
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="card-header">
+                        <span class="card-title">⚙️ Algorithm Weights</span>
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>🧩 Skill Overlap</span>
+                            <span id="val-skill">45%</span>
+                        </div>
+                        <input type="range" id="weight-skill" class="range-slider" min="0" max="100" value="45">
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>🧠 Semantic TF-IDF Match</span>
+                            <span id="val-semantic">35%</span>
+                        </div>
+                        <input type="range" id="weight-semantic" class="range-slider" min="0" max="100" value="35">
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>⏳ Work Experience</span>
+                            <span id="val-exp">10%</span>
+                        </div>
+                        <input type="range" id="weight-exp" class="range-slider" min="0" max="100" value="10">
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>🎓 Education Level</span>
+                            <span id="val-edu">10%</span>
+                        </div>
+                        <input type="range" id="weight-edu" class="range-slider" min="0" max="100" value="10">
+                    </div>
+                </div>
+
+                <!-- Shortlist Filter Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🔍 Recruiter Filters</span>
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>Minimum Fit Threshold</span>
+                            <span id="val-threshold">50%</span>
+                        </div>
+                        <input type="range" id="filter-threshold" class="range-slider" min="0" max="100" value="50">
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- Main Content Area -->
+            <section class="content-area">
+
+                <!-- Input Section Card -->
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="card-header">
+                        <span class="card-title">📝 Job Description & Resumes</span>
+                        <select id="select-sample-jd" class="btn btn-secondary"
+                            style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+                            <option value="">-- Select Pre-loaded Job Description --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="jd-text">Target Job Description (JD):</label>
+                        <textarea id="jd-text" class="textarea-jd"
+                            placeholder="Paste target job description responsibilities, required technical skills, min experience..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Upload Resumes (.pdf, .docx, .txt):</label>
+                        <div id="dropzone" class="dropzone">
+                            <div class="dropzone-icon">📄</div>
+                            <p style="font-weight: 500; margin-bottom: 0.25rem;">Drag & drop resume files here, or click
+                                to browse</p>
+                            <p style="font-size: 0.75rem; color: var(--text-muted);" id="file-count-label">Supports
+                                multi-file upload</p>
+                            <input type="file" id="file-input" class="file-input" multiple accept=".pdf,.docx,.txt">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <button id="btn-analyze" class="btn btn-primary btn-full">
+                            <span id="btn-spinner" class="spinner hidden"></span>
+                            <span id="btn-text">🚀 Run AI Screening & Rank Candidates</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Summary Dashboard -->
+                <div id="kpi-section" class="kpi-grid hidden">
+                    <div class="kpi-card">
+                        <div class="kpi-icon" style="background: rgba(99, 102, 241, 0.15); color: #818CF8;">👥</div>
+                        <div>
+                            <div class="kpi-val" id="kpi-total">0</div>
+                            <div class="kpi-lbl">Total Resumes Evaluated</div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.15); color: #34D399;">🌟</div>
+                        <div>
+                            <div class="kpi-val" id="kpi-shortlisted" style="color: #34D399;">0</div>
+                            <div class="kpi-lbl">Shortlisted Candidates (&ge;50%)</div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon" style="background: rgba(245, 158, 11, 0.15); color: #FBBF24;">📊</div>
+                        <div>
+                            <div class="kpi-val" id="kpi-avg">0%</div>
+                            <div class="kpi-lbl">Average Match Score</div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon" style="background: rgba(139, 92, 246, 0.15); color: #A78BFA;">🏆</div>
+                        <div>
+                            <div class="kpi-val" id="kpi-top" style="color: #A78BFA;">0%</div>
+                            <div class="kpi-lbl">Top Candidate Match</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leaderboard Section Card -->
+                <div id="results-card" class="card hidden">
+                    <div class="card-header">
+                        <span class="card-title">🏆 Candidate Ranking Leaderboard</span>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button id="btn-export-csv" class="btn btn-secondary"
+                                style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                📥 Export CSV
+                            </button>
+                            <button id="btn-export-excel" class="btn btn-secondary"
+                                style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                📊 Export Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Candidate Name</th>
+                                    <th>Overall Score</th>
+                                    <th>Fit Status</th>
+                                    <th>Skills Matched</th>
+                                    <th>Experience</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-body">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- Candidate Detail Inspector Modal -->
+    <div id="modal-detail" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="card-header">
+                <span class="card-title" id="modal-candidate-name">Candidate Name</span>
+                <button id="btn-close-modal" class="btn btn-secondary" style="padding: 0.3rem 0.6rem;">✕</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem;">
+                <div>
+                    <div id="plotly-gauge" style="width: 100%; height: 260px;"></div>
+                </div>
+                <div>
+                    <h4 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">Contact & Information</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                        <strong>Email:</strong> <span id="modal-email">-</span></p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                        <strong>Phone:</strong> <span id="modal-phone">-</span></p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                        <strong>Experience:</strong> <span id="modal-exp">-</span></p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                        <strong>Education:</strong> <span id="modal-edu">-</span></p>
+
+                    <div style="margin-top: 1rem;">
+                        <h4 style="font-size: 0.85rem; font-weight: 600; color: #34D399; margin-bottom: 0.3rem;">🟢
+                            Matched Skills</h4>
+                        <div id="modal-matched-skills" style="margin-bottom: 0.75rem;"></div>
+
+                        <h4 style="font-size: 0.85rem; font-weight: 600; color: #F87171; margin-bottom: 0.3rem;">🔴
+                            Missing Skills (Skill Gap)</h4>
+                        <div id="modal-missing-skills"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JS -->
+    <script src="app.js"></script>
+</body>
+
+</html>
