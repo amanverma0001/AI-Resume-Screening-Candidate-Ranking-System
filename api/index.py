@@ -7,8 +7,8 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 
-from core.parser import parse_resume_bytes, parse_resume_text
-from core.extractor import extract_resume_entities, extract_jd_requirements
+from core.parser import extract_document_text
+from core.extractor import parse_candidate_profile, parse_job_description
 from core.matcher import rank_candidates
 
 app = FastAPI(title="AI Resume Screening API")
@@ -44,12 +44,14 @@ def get_sample_data():
         for f in sorted(os.listdir(RESUME_DIR)):
             if f.endswith((".pdf", ".docx", ".txt")):
                 file_path = os.path.join(RESUME_DIR, f)
-                parsed = parse_resume_bytes(open(file_path, "rb").read(), f)
-                entities = extract_resume_entities(parsed["text"])
+                with open(file_path, "rb") as fp:
+                    data_bytes = fp.read()
+                text = extract_document_text(data_bytes, f)
+                profile = parse_candidate_profile(text, f)
                 sample_resumes.append({
                     "filename": f,
-                    "text": parsed["text"],
-                    "entities": entities
+                    "text": text,
+                    "profile": profile
                 })
 
     return {
@@ -70,7 +72,7 @@ async def analyze_candidates(
     use_sample_resumes: bool = Form(False)
 ):
     try:
-        jd_profile = extract_jd_requirements(jd_text)
+        jd_profile = parse_job_description(jd_text)
         candidates_data = []
 
         if use_sample_resumes:
@@ -78,33 +80,41 @@ async def analyze_candidates(
                 for f in sorted(os.listdir(RESUME_DIR)):
                     if f.endswith((".pdf", ".docx", ".txt")):
                         file_path = os.path.join(RESUME_DIR, f)
-                        parsed = parse_resume_bytes(open(file_path, "rb").read(), f)
-                        entities = extract_resume_entities(parsed["text"])
-                        candidates_data.append(entities)
+                        with open(file_path, "rb") as fp:
+                            data_bytes = fp.read()
+                        text = extract_document_text(data_bytes, f)
+                        profile = parse_candidate_profile(text, f)
+                        candidates_data.append(profile)
         elif files:
             for file in files:
                 contents = await file.read()
-                parsed = parse_resume_bytes(contents, file.filename)
-                entities = extract_resume_entities(parsed["text"])
-                candidates_data.append(entities)
+                text = extract_document_text(contents, file.filename)
+                profile = parse_candidate_profile(text, file.filename)
+                candidates_data.append(profile)
         else:
             raise HTTPException(status_code=400, detail="No resume files provided and use_sample_resumes is false.")
 
         weights = {
-            "skill": skill_weight,
-            "experience": experience_weight,
-            "education": education_weight,
-            "semantic": semantic_weight
+            "skill_weight": skill_weight,
+            "exp_weight": experience_weight,
+            "edu_weight": education_weight,
+            "semantic_weight": semantic_weight
         }
 
-        ranked_df = rank_candidates(candidates_data, jd_profile, weights)
-        ranked_list = ranked_df.to_dict(orient="records")
+        ranked_list = rank_candidates(candidates_data, jd_profile, weights)
 
         total = len(ranked_list)
         shortlisted = sum(1 for c in ranked_list if c.get("final_score", 0) >= cutoff_score)
         avg_score = round(sum(c.get("final_score", 0) for c in ranked_list) / max(total, 1), 1)
         top_cand = ranked_list[0]["candidate_name"] if total > 0 else "N/A"
         top_score = ranked_list[0]["final_score"] if total > 0 else 0.0
+
+        jd_display_profile = {
+            "detected_role": jd_profile.get("detected_role", "Software Engineer"),
+            "required_experience_years": jd_profile.get("min_experience_years", 4.0),
+            "required_skills": jd_profile.get("skills", []),
+            "required_education": jd_profile.get("required_education", [])
+        }
 
         return {
             "success": True,
@@ -115,7 +125,7 @@ async def analyze_candidates(
                 "top_candidate": top_cand,
                 "top_score": top_score
             },
-            "jd_profile": jd_profile,
+            "jd_profile": jd_display_profile,
             "ranked_candidates": ranked_list
         }
     except Exception as e:
