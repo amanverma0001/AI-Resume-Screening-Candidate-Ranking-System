@@ -3,7 +3,8 @@ import io
 import json
 from typing import List, Optional
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 
@@ -24,6 +25,7 @@ app.add_middleware(
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 JD_DIR = os.path.join(BASE_DIR, "sample_data", "job_descriptions")
 RESUME_DIR = os.path.join(BASE_DIR, "sample_data", "resumes")
+PUBLIC_DIR = os.path.join(BASE_DIR, "public")
 
 @app.get("/api/health")
 def health_check():
@@ -154,3 +156,18 @@ async def export_data(data: str = Form(...), format: str = Form("csv")):
             media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             headers={"Content-Disposition": "attachment; filename=candidate_ranking_results.xlsx"}
         )
+
+# Serve static web dashboard files
+@app.get("/")
+def serve_index():
+    index_file = os.path.join(PUBLIC_DIR, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
+    return {"message": "AI Resume Screening API is running."}
+
+@app.get("/{file_name}")
+def serve_static_file(file_name: str):
+    file_path = os.path.join(PUBLIC_DIR, file_name)
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+    raise HTTPException(status_code=404, detail="Not Found")
