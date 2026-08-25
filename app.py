@@ -235,6 +235,41 @@ st.markdown("""
         color: var(--text-color, #94A3B8) !important;
         opacity: 0.7;
     }
+
+    /* Red Accent Colors for Sliders, Values, Tabs & Radio Buttons */
+    div[data-testid="stSlider"] div[data-baseweb="slider"] div[role="slider"] {
+        background-color: #EF4444 !important;
+        border-color: #EF4444 !important;
+    }
+
+    div[data-testid="stSlider"] div[data-testid="stThumbValue"] {
+        color: #EF4444 !important;
+        font-weight: 700 !important;
+    }
+
+    div[data-testid="stSlider"] div[data-baseweb="slider"] > div > div {
+        background-color: #EF4444 !important;
+    }
+
+    /* Tab bar active indicator and text */
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: #EF4444 !important;
+    }
+
+    button[data-baseweb="tab"][aria-selected="true"] p {
+        color: #EF4444 !important;
+        font-weight: 700 !important;
+    }
+
+    div[data-baseweb="tab-highlight"] {
+        background-color: #EF4444 !important;
+    }
+
+    /* Radio button active dot */
+    div[data-baseweb="radio"] input:checked + div {
+        background-color: #EF4444 !important;
+        border-color: #EF4444 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
