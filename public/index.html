@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 AI Resume Screening & Candidate Ranking System</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+        <div class="moving-banner">
+            <div class="banner-icon-box">⚡</div>
+            <div class="banner-title">AI Screener Pro</div>
+            <div class="banner-subtitle">Recruiter Command Center</div>
+        </div>
+
+        <h4 class="sidebar-heading">🎛️ Operation Controls</h4>
+        <div class="radio-group">
+            <label class="radio-option active" id="label-mode-demo">
+                <input type="radio" name="mode" value="demo" checked>
+                <span>✨ 1-Click Instant Demo</span>
+            </label>
+            <label class="radio-option" id="label-mode-custom">
+                <input type="radio" name="mode" value="custom">
+                <span>📁 Upload Custom Files</span>
+            </label>
+        </div>
+
+        <!-- Custom Upload Section (Hidden in Demo) -->
+        <div id="custom-upload-section" class="hidden">
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.82rem; color: #CBD5E1; display: block; margin-bottom: 0.3rem;">📄 Job Description (.txt):</label>
+                <input type="file" id="input-jd-file" accept=".txt" class="select-input" style="padding: 0.4rem;">
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.82rem; color: #CBD5E1; display: block; margin-bottom: 0.3rem;">📁 Resumes (.pdf, .docx, .txt):</label>
+                <input type="file" id="input-resumes-files" multiple accept=".pdf,.docx,.txt" class="select-input" style="padding: 0.4rem;">
+            </div>
+            <button id="btn-run-analysis" class="btn-export" style="width: 100%; background: #4F46E5; color: white; margin-bottom: 1.25rem;">⚡ Screen & Rank Candidates</button>
+        </div>
+
+        <!-- Advanced Weights Accordion -->
+        <div class="accordion">
+            <div class="accordion-header" id="acc-header-weights">
+                <span>⚙️ Advanced Scoring Settings</span>
+                <span id="acc-arrow-weights">▼</span>
+            </div>
+            <div class="accordion-body" id="acc-body-weights">
+                <div class="slider-group">
+                    <div class="slider-label-row">
+                        <span>Skills Match Weight</span>
+                        <span id="label-w-skill">40%</span>
+                    </div>
+                    <input type="range" id="slider-w-skill" min="0" max="100" value="40" class="custom-slider">
+                </div>
+                <div class="slider-group">
+                    <div class="slider-label-row">
+                        <span>Experience Match Weight</span>
+                        <span id="label-w-exp">25%</span>
+                    </div>
+                    <input type="range" id="slider-w-exp" min="0" max="100" value="25" class="custom-slider">
+                </div>
+                <div class="slider-group">
+                    <div class="slider-label-row">
+                        <span>Education Match Weight</span>
+                        <span id="label-w-edu">15%</span>
+                    </div>
+                    <input type="range" id="slider-w-edu" min="0" max="100" value="15" class="custom-slider">
+                </div>
+                <div class="slider-group">
+                    <div class="slider-label-row">
+                        <span>Semantic Context Weight</span>
+                        <span id="label-w-sem">20%</span>
+                    </div>
+                    <input type="range" id="slider-w-sem" min="0" max="100" value="20" class="custom-slider">
+                </div>
+            </div>
+        </div>
+
+        <!-- Cutoff Slider -->
+        <div class="slider-group" style="margin-top: 0.5rem;">
+            <div class="slider-label-row">
+                <span style="font-weight: 700; color: #F1F5F9;">Shortlist Cutoff Score (%)</span>
+                <span id="label-cutoff" style="color: #EF4444; font-weight: 800;">50</span>
+            </div>
+            <input type="range" id="slider-cutoff" min="0" max="100" value="50" class="custom-slider">
+        </div>
+
+        <div style="margin-top: auto; padding-top: 1.5rem; font-size: 0.72rem; color: #64748B; line-height: 1.4;">
+            AI Resume Screening System v2.0 • Built with Python, NLP & Fast Scoring
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-main">
+        <!-- Top Animated Banner -->
+        <div class="main-header">
+            <h1>🎯 AI Resume Screening & Candidate Ranking System</h1>
+            <div class="header-badges">
+                <span class="header-pill">✨ Automated NLP Screening</span>
+                <span class="header-pill">🟢 Skill Gap Analysis</span>
+                <span class="header-pill">⚡ Multi-Factor Weighted Scoring</span>
+                <span class="header-pill">📊 Excel / CSV Export</span>
+            </div>
+        </div>
+
+        <!-- JD Preset Selector -->
+        <div style="margin-bottom: 1.5rem;">
+            <label style="font-size: 0.88rem; font-weight: 700; color: #E2E8F0; display: block; margin-bottom: 0.4rem;">Select Target Job Description Role:</label>
+            <select id="select-jd-role" class="select-input">
+                <option value="Senior Python Backend Developer (4+ Yrs)">Senior Python Backend Developer (4+ Yrs)</option>
+                <option value="Data Scientist AI Engineer (3+ Yrs)">Data Scientist AI Engineer (3+ Yrs)</option>
+                <option value="English Teacher (2+ Yrs)">English Teacher (2+ Yrs)</option>
+            </select>
+        </div>
+
+        <!-- KPI Metric Cards Grid -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">TOTAL APPLICANTS</div>
+                <div class="kpi-value" id="kpi-total">10</div>
+                <div class="kpi-sub">Resumes Parsed</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">SHORTLISTED CANDIDATES</div>
+                <div class="kpi-value" id="kpi-shortlisted" style="color: #10B981 !important;">4</div>
+                <div class="kpi-sub">Match Score &ge; <span id="kpi-sub-cutoff">50</span>%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">AVERAGE MATCH</div>
+                <div class="kpi-value" id="kpi-avg" style="color: #6366F1 !important;">43.2%</div>
+                <div class="kpi-sub">Across All Candidates</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">TOP MATCH</div>
+                <div class="kpi-value" id="kpi-top" style="color: #0EA5E9 !important; font-size: 1.4rem;">Rahul Sharma</div>
+                <div class="kpi-sub"><span id="kpi-top-score">84.5</span>% Match Score</div>
+            </div>
+        </div>
+
+        <!-- JD Requirements Extracted Box -->
+        <div class="accordion" style="margin-bottom: 1.5rem;">
+            <div class="accordion-header" id="acc-header-jd">
+                <span>🔍 View Detected Job Description Requirements</span>
+                <span id="acc-arrow-jd">▼</span>
+            </div>
+            <div class="accordion-body" id="acc-body-jd">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                    <div style="background: rgba(255, 255, 255, 0.04); padding: 12px; border-radius: 8px;">
+                        <strong style="color: #94A3B8; font-size: 0.8rem;">DETECTED ROLE</strong>
+                        <div id="jd-role-detected" style="font-weight: 700; margin-top: 4px; color: #F8FAFC;">Software Engineer</div>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.04); padding: 12px; border-radius: 8px;">
+                        <strong style="color: #94A3B8; font-size: 0.8rem;">EXPERIENCE REQUIREMENT</strong>
+                        <div id="jd-exp-detected" style="font-weight: 700; margin-top: 4px; color: #F8FAFC;">4.0 Years</div>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.04); padding: 12px; border-radius: 8px;">
+                        <strong style="color: #94A3B8; font-size: 0.8rem;">TOTAL SKILLS EXTRACTED</strong>
+                        <div id="jd-skills-count" style="font-weight: 700; margin-top: 4px; color: #F8FAFC;">31 Skills</div>
+                    </div>
+                </div>
+                <div style="margin-top: 0.5rem;">
+                    <strong style="color: #94A3B8; font-size: 0.8rem; display: block; margin-bottom: 0.4rem;">REQUIRED SKILLS TAGS:</strong>
+                    <div id="jd-skills-tags-container" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="tab-leaderboard">🏆 Candidate Leaderboard</button>
+            <button class="tab-btn" data-tab="tab-analytics">📊 Comparative Analytics</button>
+            <button class="tab-btn" data-tab="tab-inspector">👤 Deep-Dive Candidate Inspector</button>
+            <button class="tab-btn" data-tab="tab-export">📥 Export Center</button>
+        </div>
+
+        <!-- Tab 1: Leaderboard -->
+        <div id="tab-content-leaderboard">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <h3 style="font-size: 1.2rem; font-weight: 800; color: #F8FAFC;">🎯 Ranked Applicant Leaderboard</h3>
+                <label style="font-size: 0.85rem; color: #CBD5E1; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;">
+                    <input type="checkbox" id="chk-only-shortlisted">
+                    <span>Show Only Shortlisted (&ge; <span id="label-chk-cutoff">50</span>%)</span>
+                </label>
+            </div>
+
+            <!-- Instant Search Bar -->
+            <div class="search-bar-container">
+                <label style="font-size: 0.85rem; color: #9CA3AF; margin-bottom: 0.3rem; display: block;">🔍 Instant Keyword & Skill Search:</label>
+                <input type="text" id="input-search" class="search-input" placeholder="Type any skill (e.g. Python, Docker, PyTorch), candidate name, degree, or email...">
+            </div>
+
+            <!-- Data Table -->
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Candidate Name</th>
+                            <th style="width: 220px;">Match Score</th>
+                            <th>Shortlisted Status</th>
+                            <th>Fit Status</th>
+                            <th>Matched Skills</th>
+                            <th>Experience</th>
+                            <th>Education</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body-leaderboard">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab 2: Comparative Analytics -->
+        <div id="tab-content-analytics" class="hidden">
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: #F8FAFC; margin-bottom: 1rem;">📊 Recruiter Analytics</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div>
+                    <div id="chart-leaderboard-bar" style="width: 100%; height: 350px;"></div>
+                </div>
+                <div>
+                    <div id="chart-category-dist" style="width: 100%; height: 350px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Deep-Dive Inspector -->
+        <div id="tab-content-inspector" class="hidden">
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: #F8FAFC; margin-bottom: 0.75rem;">👤 Individual Candidate Deep Dive</h3>
+            <select id="inspector-cand-select" class="select-input">
+                <!-- Dynamic Candidate List -->
+            </select>
+
+            <!-- Candidate Header Section -->
+            <div style="background: #1E293B; border: 1px solid rgba(99, 102, 241, 0.4); border-radius: 16px; padding: 18px 22px; margin-bottom: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2 id="insp-name" style="font-size: 1.5rem; font-weight: 800; color: #F8FAFC;">Candidate Name</h2>
+                        <div style="font-size: 0.85rem; color: #94A3B8; margin-top: 4px;">
+                            <span id="insp-email">email@example.com</span> • <span id="insp-phone">+91 0000000000</span> • <span id="insp-exp">0 Yrs Exp</span>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div id="insp-score" style="font-size: 2rem; font-weight: 800; color: #10B981;">0.0%</div>
+                        <div id="insp-fit" style="font-size: 0.85rem; font-weight: 700; color: #CBD5E1;">Strong Fit</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Analysis Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px 18px;">
+                    <h4 style="color: #10B981; font-size: 0.95rem; font-weight: 700; margin-bottom: 8px;">✅ Matched Skills (<span id="insp-matched-count">0</span>)</h4>
+                    <div id="insp-matched-tags" style="display: flex; flex-wrap: wrap; gap: 4px;"></div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px 18px;">
+                    <h4 style="color: #EF4444; font-size: 0.95rem; font-weight: 700; margin-bottom: 8px;">❌ Missing Skills (<span id="insp-missing-count">0</span>)</h4>
+                    <div id="insp-missing-tags" style="display: flex; flex-wrap: wrap; gap: 4px;"></div>
+                </div>
+            </div>
+
+            <!-- Formatted Resume Viewer Paper -->
+            <h4 style="font-size: 1rem; font-weight: 700; color: #F8FAFC; margin-bottom: 0.5rem;">📄 Structured Resume Content</h4>
+            <div class="resume-paper">
+                <div id="insp-resume-text" style="white-space: pre-wrap; font-family: monospace; font-size: 0.85rem; line-height: 1.6; max-height: 400px; overflow-y: auto;"></div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Export Center -->
+        <div id="tab-content-export" class="hidden">
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: #F8FAFC; margin-bottom: 0.5rem;">📥 Export Screening Results</h3>
+            <p style="font-size: 0.85rem; color: #94A3B8; margin-bottom: 1.5rem;">Download candidate rankings, scores, and matched skill evaluations for HR reviews.</p>
+            <div class="export-grid">
+                <button id="btn-export-csv" class="btn-export">📄 Download CSV Report</button>
+                <button id="btn-export-excel" class="btn-export">📊 Download Excel Workbook (.xlsx)</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
