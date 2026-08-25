@@ -238,37 +238,42 @@ st.markdown("""
 
     /* Red Accent Colors for Sliders, Values, Tabs & Radio Buttons */
     div[data-testid="stSlider"] div[data-baseweb="slider"] div[role="slider"] {
-        background-color: #EF4444 !important;
-        border-color: #EF4444 !important;
+        background-color: #FF4B4B !important;
+        border-color: #FF4B4B !important;
     }
 
     div[data-testid="stSlider"] div[data-testid="stThumbValue"] {
-        color: #EF4444 !important;
+        color: #FF4B4B !important;
         font-weight: 700 !important;
     }
 
     div[data-testid="stSlider"] div[data-baseweb="slider"] > div > div {
-        background-color: #EF4444 !important;
+        background-color: #FF4B4B !important;
     }
 
     /* Tab bar active indicator and text */
     button[data-baseweb="tab"][aria-selected="true"] {
-        color: #EF4444 !important;
+        color: #FF4B4B !important;
     }
 
     button[data-baseweb="tab"][aria-selected="true"] p {
-        color: #EF4444 !important;
+        color: #FF4B4B !important;
         font-weight: 700 !important;
     }
 
     div[data-baseweb="tab-highlight"] {
-        background-color: #EF4444 !important;
+        background-color: #FF4B4B !important;
     }
 
     /* Radio button active dot */
-    div[data-baseweb="radio"] input:checked + div {
-        background-color: #EF4444 !important;
-        border-color: #EF4444 !important;
+    div[data-baseweb="radio"] input:checked + div,
+    div[data-baseweb="radio"] div[aria-checked="true"] {
+        background-color: #FF4B4B !important;
+        border-color: #FF4B4B !important;
+    }
+
+    div[data-baseweb="radio"] div[aria-checked="true"] > div {
+        background-color: #FF4B4B !important;
     }
 </style>
 """, unsafe_allow_html=True)
