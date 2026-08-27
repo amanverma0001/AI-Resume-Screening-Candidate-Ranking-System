@@ -16,6 +16,7 @@ from utils.visualizer import (
     create_category_distribution_chart
 )
 from utils.exporter import export_to_csv, export_to_excel, export_to_pdf
+from utils.landing_page import render_landing_page
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -24,6 +25,47 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# --- Global CSS to eliminate top blank space ---
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    
+    /* Completely eliminate top empty blank space */
+    header[data-testid="stHeader"] {
+        display: none !important;
+    }
+    
+    .block-container {
+        padding-top: 1rem !important;
+        padding-bottom: 2rem !important;
+        padding-left: 2.5rem !important;
+        padding-right: 2.5rem !important;
+        max-width: 1400px !important;
+    }
+    
+    #MainMenu, footer {
+        visibility: hidden !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# --- Session Authentication Check & Landing Page Gatekeeper ---
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+if "user_info" not in st.session_state:
+    st.session_state.user_info = None
+if "registered_users" not in st.session_state:
+    st.session_state.registered_users = {}
+
+if not st.session_state.authenticated:
+    render_landing_page()
+    st.stop()
+
 
 # --- Custom Styling & CSS Design System ---
 st.markdown("""
@@ -371,6 +413,21 @@ with st.sidebar:
             weights = {"skill_weight": 0.60, "semantic_weight": 0.0, "exp_weight": 0.20, "edu_weight": 0.20}
 
     shortlist_threshold = st.slider("Shortlist Cutoff Score (%)", min_value=30, max_value=90, value=50, step=5)
+    
+    user = st.session_state.get("user_info") or {"name": "Recruiter", "role": "Talent Specialist", "organization": "Edufyi Tech"}
+    st.markdown(f"""
+    <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px 14px; margin-top: 16px; margin-bottom: 10px;">
+        <div style="font-size: 0.72rem; color: #94A3B8; font-weight: 700; text-transform: uppercase;">👤 Active Recruiter</div>
+        <div style="font-weight: 800; color: #F8FAFC; font-size: 0.95rem; margin-top: 2px;">{user.get('name', 'Recruiter')}</div>
+        <div style="font-size: 0.78rem; color: #FF4B4B; margin-top: 2px; font-weight: 600;">{user.get('role', 'Talent Specialist')} • {user.get('organization', 'Enterprise')}</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("🚪 Sign Out (Landing Page)", use_container_width=True):
+        st.session_state.authenticated = False
+        st.session_state.user_info = None
+        st.rerun()
+
     st.markdown("---")
     st.caption("AI Resume Screening System v2.0 • Built with Python, NLP & Streamlit")
 
