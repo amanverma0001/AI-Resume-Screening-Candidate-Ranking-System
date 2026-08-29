@@ -35,33 +35,70 @@ st.markdown("""
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
-    /* Header & Sidebar Controls Fix */
+    /* Header & Sidebar Toggle Arrow Permanent Visibility */
     header[data-testid="stHeader"] {
         background: transparent !important;
-        height: 2.5rem !important;
-        z-index: 99 !important;
+        height: 3rem !important;
+        z-index: 9999 !important;
+        overflow: visible !important;
     }
     
-    [data-testid="stSidebarCollapsedControl"] {
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="collapsedControl"] {
         display: flex !important;
         visibility: visible !important;
-        z-index: 1000 !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0.75rem !important;
+        left: 0.75rem !important;
+        z-index: 9999999 !important;
         color: #FF4B4B !important;
-        background: rgba(30, 41, 59, 0.85) !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
-        border-radius: 8px !important;
-        top: 0.5rem !important;
-        left: 0.5rem !important;
+        background: #1E293B !important;
+        border: 1px solid rgba(255, 75, 75, 0.4) !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
+        padding: 4px 6px !important;
+        cursor: pointer !important;
+        pointer-events: auto !important;
     }
-    
+
+    [data-testid="stSidebarCollapsedControl"] button,
+    [data-testid="collapsedControl"] button {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        color: #FF4B4B !important;
+        background: transparent !important;
+        border: none !important;
+        cursor: pointer !important;
+    }
+
+    [data-testid="stSidebarCollapsedControl"] svg,
+    [data-testid="collapsedControl"] svg {
+        fill: #FF4B4B !important;
+        color: #FF4B4B !important;
+        stroke: #FF4B4B !important;
+        width: 22px !important;
+        height: 22px !important;
+        display: block !important;
+        visibility: visible !important;
+    }
+
     [data-testid="stSidebarCollapseButton"] {
         display: flex !important;
         visibility: visible !important;
+        opacity: 1 !important;
+        color: #FF4B4B !important;
+        z-index: 999999 !important;
+    }
+
+    [data-testid="stSidebarCollapseButton"] svg {
+        fill: #FF4B4B !important;
         color: #FF4B4B !important;
     }
 
     section[data-testid="stSidebar"] {
-        z-index: 100 !important;
+        z-index: 100000 !important;
     }
     
     .block-container {
