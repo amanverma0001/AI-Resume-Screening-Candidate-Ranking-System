@@ -35,61 +35,31 @@ st.markdown("""
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
-    /* Header & Sidebar Toggle Arrow Permanent Visibility */
-    header[data-testid="stHeader"] {
-        background: transparent !important;
-        height: 3rem !important;
-        z-index: 9999 !important;
-        overflow: visible !important;
-    }
-    
-    [data-testid="stSidebarCollapsedControl"],
-    [data-testid="collapsedControl"] {
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        top: 0.75rem !important;
-        left: 0.75rem !important;
-        z-index: 9999999 !important;
-        color: #FF4B4B !important;
-        background: #1E293B !important;
-        border: 1px solid rgba(255, 75, 75, 0.4) !important;
-        border-radius: 10px !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
-        padding: 4px 6px !important;
-        cursor: pointer !important;
-        pointer-events: auto !important;
+    /* Clean container padding */
+    .block-container {
+        padding-top: 3.5rem !important;
+        padding-bottom: 2rem !important;
+        padding-left: 2.5rem !important;
+        padding-right: 2.5rem !important;
+        max-width: 1400px !important;
     }
 
-    [data-testid="stSidebarCollapsedControl"] button,
-    [data-testid="collapsedControl"] button {
+    /* Red Accent for Sidebar Collapse / Expand Toggle Controls */
+    [data-testid="stSidebarCollapsedControl"] {
         display: flex !important;
         visibility: visible !important;
-        opacity: 1 !important;
         color: #FF4B4B !important;
-        background: transparent !important;
-        border: none !important;
-        cursor: pointer !important;
     }
 
-    [data-testid="stSidebarCollapsedControl"] svg,
-    [data-testid="collapsedControl"] svg {
+    [data-testid="stSidebarCollapsedControl"] svg {
         fill: #FF4B4B !important;
         color: #FF4B4B !important;
-        stroke: #FF4B4B !important;
-        width: 22px !important;
-        height: 22px !important;
-        display: block !important;
-        visibility: visible !important;
     }
 
     [data-testid="stSidebarCollapseButton"] {
         display: flex !important;
         visibility: visible !important;
-        opacity: 1 !important;
         color: #FF4B4B !important;
-        z-index: 999999 !important;
     }
 
     [data-testid="stSidebarCollapseButton"] svg {
@@ -97,30 +67,11 @@ st.markdown("""
         color: #FF4B4B !important;
     }
 
-    section[data-testid="stSidebar"] {
-        z-index: 100000 !important;
-    }
-    
-    .block-container {
-        padding-top: 2rem !important;
-        padding-bottom: 2rem !important;
-        padding-left: 2.5rem !important;
-        padding-right: 2.5rem !important;
-        max-width: 1400px !important;
-    }
-    
-    /* Hide Streamlit top-right toolbar buttons (Share, Star, Edit, GitHub, Deploy) */
-    [data-testid="stToolbar"],
-    [data-testid="stToolbarActions"],
+    /* Hide ONLY the top-right toolbar actions, Deploy button, and 3-dots Menu */
     .stDeployButton,
-    [data-testid="stDecoration"],
-    [data-testid="stStatusWidget"],
+    [data-testid="stToolbarActions"],
     #MainMenu,
-    footer,
-    div[class*="viewerBadge"],
-    div[class*="stToolbar"],
-    div[class*="stActionButtons"],
-    div[data-testid="stToolbarActionButton"] {
+    footer {
         display: none !important;
         visibility: hidden !important;
     }
