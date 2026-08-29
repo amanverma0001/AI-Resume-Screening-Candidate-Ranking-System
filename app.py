@@ -35,13 +35,37 @@ st.markdown("""
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
-    /* Completely eliminate top empty blank space */
+    /* Header & Sidebar Controls Fix */
     header[data-testid="stHeader"] {
-        display: none !important;
+        background: transparent !important;
+        height: 2.5rem !important;
+        z-index: 99 !important;
+    }
+    
+    [data-testid="stSidebarCollapsedControl"] {
+        display: flex !important;
+        visibility: visible !important;
+        z-index: 1000 !important;
+        color: #FF4B4B !important;
+        background: rgba(30, 41, 59, 0.85) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 8px !important;
+        top: 0.5rem !important;
+        left: 0.5rem !important;
+    }
+    
+    [data-testid="stSidebarCollapseButton"] {
+        display: flex !important;
+        visibility: visible !important;
+        color: #FF4B4B !important;
+    }
+
+    section[data-testid="stSidebar"] {
+        z-index: 100 !important;
     }
     
     .block-container {
-        padding-top: 1rem !important;
+        padding-top: 2rem !important;
         padding-bottom: 2rem !important;
         padding-left: 2.5rem !important;
         padding-right: 2.5rem !important;
