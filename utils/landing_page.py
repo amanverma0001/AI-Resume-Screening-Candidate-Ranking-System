@@ -24,6 +24,22 @@ def render_landing_page():
             height: 1.5rem !important;
         }
 
+        /* Hide Streamlit top-right toolbar buttons (Share, Star, Edit, GitHub, Deploy) */
+        [data-testid="stToolbar"],
+        [data-testid="stToolbarActions"],
+        .stDeployButton,
+        [data-testid="stDecoration"],
+        [data-testid="stStatusWidget"],
+        #MainMenu,
+        footer,
+        div[class*="viewerBadge"],
+        div[class*="stToolbar"],
+        div[class*="stActionButtons"],
+        div[data-testid="stToolbarActionButton"] {
+            display: none !important;
+            visibility: hidden !important;
+        }
+
         @keyframes pulseDot {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
             70% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
