@@ -11,25 +11,54 @@ Implements the 7 Architectural Pillars from the Production Blueprint:
 """
 
 import streamlit as st
-import streamlit.components.v1 as components
 from core.auth import verify_credentials, register_new_user, DEFAULT_USERS
 
 def inject_movable_canvas_engine():
     """
-    Mounts a full-screen, zero-DOM procedural HTML5 canvas on parent window
+    Mounts a full-screen, zero-DOM procedural HTML5 canvas on the parent/main window
     featuring neural network synaptic graphs, mouse crosshairs HUD scanner,
     and click energy burst shockwaves with floating awards.
     """
-    canvas_js = """
+    canvas_html = """
     <script>
     (function() {
-        const pDoc = window.parent.document;
-        if (!pDoc) return;
+        // Resolve target document (works both in native st.html and within iframes)
+        var targetDoc = document;
+        try {
+            if (window.parent && window.parent.document && window.parent.document.body) {
+                targetDoc = window.parent.document;
+            }
+        } catch(e) {
+            targetDoc = document;
+        }
 
-        // Prevent duplicate canvas instances
-        let canvas = pDoc.getElementById("elythra-movable-canvas");
+        // Prevent duplicate animation engines
+        if (targetDoc.__elythraCanvasInitialized) {
+            return;
+        }
+        targetDoc.__elythraCanvasInitialized = true;
+
+        // Ensure transparency style exists on the top document
+        var styleTag = targetDoc.getElementById("elythra-transparency-override");
+        if (!styleTag) {
+            styleTag = targetDoc.createElement("style");
+            styleTag.id = "elythra-transparency-override";
+            styleTag.textContent = "" +
+                "html, body, .stApp, [data-testid=\"stAppViewContainer\"], [data-testid=\"stHeader\"], header, .main, [data-testid=\"stMain\"] {" +
+                "    background: transparent !important;" +
+                "    background-color: transparent !important;" +
+                "}" +
+                "body {" +
+                "    background-color: #030712 !important;" +
+                "    overflow-x: hidden !important;" +
+                "}";
+            targetDoc.head.appendChild(styleTag);
+        }
+
+        // Mount Canvas Element
+        var canvas = targetDoc.getElementById("elythra-movable-canvas");
         if (!canvas) {
-            canvas = pDoc.createElement("canvas");
+            canvas = targetDoc.createElement("canvas");
             canvas.id = "elythra-movable-canvas";
             canvas.style.position = "fixed";
             canvas.style.top = "0";
@@ -39,36 +68,39 @@ def inject_movable_canvas_engine():
             canvas.style.zIndex = "0";
             canvas.style.pointerEvents = "none";
             canvas.style.background = "radial-gradient(ellipse at 50% 15%, #0F172A 0%, #030712 100%)";
-            pDoc.body.prepend(canvas);
+            targetDoc.body.prepend(canvas);
         }
 
-        const ctx = canvas.getContext("2d");
-        let width = canvas.width = pDoc.documentElement.clientWidth || window.innerWidth;
-        let height = canvas.height = pDoc.documentElement.clientHeight || window.innerHeight;
+        var ctx = canvas.getContext("2d");
+        var width = canvas.width = targetDoc.documentElement.clientWidth || window.innerWidth;
+        var height = canvas.height = targetDoc.documentElement.clientHeight || window.innerHeight;
 
-        const onResize = () => {
-            width = canvas.width = pDoc.documentElement.clientWidth || window.innerWidth;
-            height = canvas.height = pDoc.documentElement.clientHeight || window.innerHeight;
+        var onResize = function() {
+            width = canvas.width = targetDoc.documentElement.clientWidth || window.innerWidth;
+            height = canvas.height = targetDoc.documentElement.clientHeight || window.innerHeight;
         };
-        window.parent.addEventListener("resize", onResize);
+        window.addEventListener("resize", onResize);
+        if (window.parent) window.parent.addEventListener("resize", onResize);
 
         // Mouse Tracker & HUD
-        let mouseX = -999;
-        let mouseY = -999;
-        let isMouseOver = false;
+        var mouseX = -999;
+        var mouseY = -999;
+        var isMouseOver = false;
 
-        pDoc.addEventListener("mousemove", (e) => {
+        var onMouseMove = function(e) {
             mouseX = e.clientX;
             mouseY = e.clientY;
             isMouseOver = true;
-        });
-
-        pDoc.addEventListener("mouseleave", () => {
+        };
+        var onMouseLeave = function() {
             isMouseOver = false;
-        });
+        };
+
+        targetDoc.addEventListener("mousemove", onMouseMove);
+        targetDoc.addEventListener("mouseleave", onMouseLeave);
 
         // Click Shockwave Awards
-        const REWARDS = [
+        var REWARDS = [
             "+100% MATCH 🎯",
             "CANDIDATE SHORTLISTED! 🏆",
             "0.09s INFERENCE ⚡",
@@ -80,18 +112,18 @@ def inject_movable_canvas_engine():
             "2,484 RESUMES LOADED 📊",
             "PRECISION AI ONLINE ✨"
         ];
-        let shockwaves = [];
+        var shockwaves = [];
 
-        pDoc.addEventListener("click", (e) => {
-            const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
+        targetDoc.addEventListener("click", function(e) {
+            var tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
             if (tag === "input" || tag === "textarea") return;
 
-            const text = REWARDS[Math.floor(Math.random() * REWARDS.length)];
+            var text = REWARDS[Math.floor(Math.random() * REWARDS.length)];
             shockwaves.push({
                 x: e.clientX,
                 y: e.clientY,
                 r: 6,
-                maxR: 90,
+                maxR: 95,
                 opacity: 1.0,
                 text: text,
                 color: Math.random() > 0.5 ? "#38BDF8" : "#A855F7"
@@ -99,50 +131,50 @@ def inject_movable_canvas_engine():
         });
 
         // Neural Network Nodes
-        const nodeCount = Math.min(80, Math.max(45, Math.floor(width / 22)));
-        const nodes = [];
-        for (let i = 0; i < nodeCount; i++) {
+        var nodeCount = Math.min(85, Math.max(50, Math.floor(width / 20)));
+        var nodes = [];
+        for (var i = 0; i < nodeCount; i++) {
             nodes.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.7,
-                vy: (Math.random() - 0.5) * 0.7,
-                r: Math.random() * 2.2 + 1.2,
+                vx: (Math.random() - 0.5) * 0.75,
+                vy: (Math.random() - 0.5) * 0.75,
+                r: Math.random() * 2.4 + 1.2,
                 color: Math.random() > 0.6 ? "#38BDF8" : Math.random() > 0.3 ? "#818CF8" : "#10B981"
             });
         }
 
         // Rising Data Embers
-        const emberCount = 36;
-        const embers = [];
-        for (let i = 0; i < emberCount; i++) {
+        var emberCount = 38;
+        var embers = [];
+        for (var i = 0; i < emberCount; i++) {
             embers.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
                 r: Math.random() * 2.2 + 0.8,
                 speedY: Math.random() * 0.85 + 0.35,
                 speedX: (Math.random() - 0.5) * 0.45,
-                opacity: Math.random() * 0.7 + 0.2,
+                opacity: Math.random() * 0.7 + 0.25,
                 color: Math.random() > 0.5 ? "#6366F1" : "#06B6D4"
             });
         }
 
         // Drifting Telemetry Floating Badges
-        const floatingBadges = [
+        var floatingBadges = [
             { text: "🎯 ELYTHRA v2.4 • Active Screener", x: width * 0.08, y: height * 0.22, vx: 0.35, color: "#38BDF8" },
             { text: "⚡ INGESTION: 620 Resumes/Min", x: width * 0.72, y: height * 0.28, vx: -0.32, color: "#10B981" },
             { text: "📊 KAGGLE BENCHMARK: 2,484 Resumes", x: width * 0.25, y: height * 0.82, vx: 0.38, color: "#A855F7" },
             { text: "🚀 Amandeep Verma • Capstone M1", x: width * 0.65, y: height * 0.75, vx: -0.28, color: "#F59E0B" }
         ];
 
-        let tick = 0;
+        var tick = 0;
         function animate() {
             tick++;
             ctx.clearRect(0, 0, width, height);
 
             // 1. Draw Rising Embers
-            for (let i = 0; i < embers.length; i++) {
-                const em = embers[i];
+            for (var i = 0; i < embers.length; i++) {
+                var em = embers[i];
                 em.y -= em.speedY;
                 em.x += em.speedX;
                 if (em.y < -10) { em.y = height + 10; em.x = Math.random() * width; }
@@ -160,14 +192,14 @@ def inject_movable_canvas_engine():
             }
 
             // 2. Draw Synaptic Network Lines
-            const maxDist = 135;
-            for (let i = 0; i < nodes.length; i++) {
-                for (let j = i + 1; j < nodes.length; j++) {
-                    const dx = nodes[i].x - nodes[j].x;
-                    const dy = nodes[i].y - nodes[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
+            var maxDist = 140;
+            for (var i = 0; i < nodes.length; i++) {
+                for (var j = i + 1; j < nodes.length; j++) {
+                    var dx = nodes[i].x - nodes[j].x;
+                    var dy = nodes[i].y - nodes[j].y;
+                    var dist = Math.sqrt(dx * dx + dy * dy);
                     if (dist < maxDist) {
-                        const alpha = (1 - dist / maxDist) * 0.22;
+                        var alpha = (1 - dist / maxDist) * 0.24;
                         ctx.beginPath();
                         ctx.moveTo(nodes[i].x, nodes[i].y);
                         ctx.lineTo(nodes[j].x, nodes[j].y);
@@ -180,8 +212,8 @@ def inject_movable_canvas_engine():
             }
 
             // 3. Draw Nodes and Update Positions
-            for (let i = 0; i < nodes.length; i++) {
-                const n = nodes[i];
+            for (var i = 0; i < nodes.length; i++) {
+                var n = nodes[i];
                 n.x += n.vx;
                 n.y += n.vy;
 
@@ -190,21 +222,21 @@ def inject_movable_canvas_engine():
 
                 // Mouse Gravity & Connection Beams
                 if (isMouseOver) {
-                    const mdx = mouseX - n.x;
-                    const mdy = mouseY - n.y;
-                    const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-                    if (mdist < 170) {
-                        const mAlpha = (1 - mdist / 170) * 0.65;
+                    var mdx = mouseX - n.x;
+                    var mdy = mouseY - n.y;
+                    var mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+                    if (mdist < 180) {
+                        var mAlpha = (1 - mdist / 180) * 0.7;
                         ctx.beginPath();
                         ctx.moveTo(n.x, n.y);
                         ctx.lineTo(mouseX, mouseY);
                         ctx.strokeStyle = "#38BDF8";
                         ctx.globalAlpha = mAlpha;
-                        ctx.lineWidth = 1.3;
+                        ctx.lineWidth = 1.4;
                         ctx.stroke();
 
-                        n.x += mdx * 0.008;
-                        n.y += mdy * 0.008;
+                        n.x += mdx * 0.009;
+                        n.y += mdy * 0.009;
                     }
                 }
 
@@ -219,16 +251,16 @@ def inject_movable_canvas_engine():
             }
 
             // 4. Draw Floating Telemetry Badges
-            for (let i = 0; i < floatingBadges.length; i++) {
-                const b = floatingBadges[i];
+            for (var i = 0; i < floatingBadges.length; i++) {
+                var b = floatingBadges[i];
                 b.x += b.vx;
-                if (b.x < -240) b.x = width + 50;
-                if (b.x > width + 240) b.x = -200;
+                if (b.x < -260) b.x = width + 50;
+                if (b.x > width + 260) b.x = -220;
 
                 ctx.save();
                 ctx.font = "11px 'Plus Jakarta Sans', sans-serif";
                 ctx.fillStyle = b.color;
-                ctx.globalAlpha = 0.42 + Math.sin(tick * 0.04 + i) * 0.14;
+                ctx.globalAlpha = 0.45 + Math.sin(tick * 0.04 + i) * 0.15;
                 ctx.fillText(b.text, b.x, b.y);
                 ctx.restore();
             }
@@ -236,7 +268,7 @@ def inject_movable_canvas_engine():
             // 5. Interactive Mouse Crosshair HUD Scanner
             if (isMouseOver && mouseX > 0 && mouseY > 0) {
                 ctx.save();
-                ctx.strokeStyle = "rgba(99, 102, 241, 0.25)";
+                ctx.strokeStyle = "rgba(99, 102, 241, 0.28)";
                 ctx.lineWidth = 1;
                 ctx.setLineDash([4, 4]);
 
@@ -250,15 +282,15 @@ def inject_movable_canvas_engine():
                 // Target Reticle Circle
                 ctx.setLineDash([]);
                 ctx.strokeStyle = "#38BDF8";
-                ctx.globalAlpha = 0.85;
+                ctx.globalAlpha = 0.9;
                 ctx.lineWidth = 1.5;
                 ctx.beginPath();
                 ctx.arc(mouseX, mouseY, 18, 0, Math.PI * 2);
                 ctx.stroke();
 
                 // Pulsing outer halo
-                const pulseR = 24 + Math.sin(tick * 0.1) * 4;
-                ctx.strokeStyle = "rgba(168, 85, 247, 0.65)";
+                var pulseR = 24 + Math.sin(tick * 0.1) * 4;
+                ctx.strokeStyle = "rgba(168, 85, 247, 0.7)";
                 ctx.beginPath();
                 ctx.arc(mouseX, mouseY, pulseR, 0, Math.PI * 2);
                 ctx.stroke();
@@ -270,12 +302,12 @@ def inject_movable_canvas_engine():
                 ctx.fill();
 
                 // Floating HUD Pill
-                const hudText = "🎯 AI SCANNER ACTIVE [ " + Math.round(mouseX) + " : " + Math.round(mouseY) + " ] • 99.4% CONFIDENCE";
+                var hudText = "🎯 AI SCANNER ACTIVE [ " + Math.round(mouseX) + " : " + Math.round(mouseY) + " ] • 99.4% CONFIDENCE";
                 ctx.font = "bold 10px 'Plus Jakarta Sans', sans-serif";
-                const textWidth = ctx.measureText(hudText).width;
+                var textWidth = ctx.measureText(hudText).width;
 
-                ctx.fillStyle = "rgba(15, 23, 42, 0.9)";
-                ctx.strokeStyle = "rgba(56, 189, 248, 0.6)";
+                ctx.fillStyle = "rgba(15, 23, 42, 0.92)";
+                ctx.strokeStyle = "rgba(56, 189, 248, 0.65)";
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.roundRect(mouseX + 24, mouseY - 16, textWidth + 18, 26, 6);
@@ -288,9 +320,9 @@ def inject_movable_canvas_engine():
             }
 
             // 6. Click Shockwaves
-            for (let i = shockwaves.length - 1; i >= 0; i--) {
-                const s = shockwaves[i];
-                s.r += 2.4;
+            for (var i = shockwaves.length - 1; i >= 0; i--) {
+                var s = shockwaves[i];
+                s.r += 2.5;
                 s.opacity -= 0.022;
 
                 if (s.opacity <= 0 || s.r >= s.maxR) {
@@ -321,21 +353,21 @@ def inject_movable_canvas_engine():
         animate();
 
         // 7. Live Telemetric Micro-Fluctuations (Ribbon Updates)
-        setInterval(() => {
-            const latEl = pDoc.getElementById("ribbon-latency");
-            const spdEl = pDoc.getElementById("ribbon-speed");
-            const accEl = pDoc.getElementById("ribbon-accuracy");
+        setInterval(function() {
+            var latEl = targetDoc.getElementById("ribbon-latency");
+            var spdEl = targetDoc.getElementById("ribbon-speed");
+            var accEl = targetDoc.getElementById("ribbon-accuracy");
 
             if (latEl) {
-                const lat = (0.08 + Math.random() * 0.03).toFixed(2);
+                var lat = (0.08 + Math.random() * 0.03).toFixed(2);
                 latEl.innerText = lat + "s";
             }
             if (spdEl) {
-                const spd = Math.floor(615 + Math.random() * 25);
+                var spd = Math.floor(615 + Math.random() * 25);
                 spdEl.innerText = spd + " / min";
             }
             if (accEl) {
-                const acc = (99.2 + Math.random() * 0.6).toFixed(1);
+                var acc = (99.2 + Math.random() * 0.6).toFixed(1);
                 accEl.innerText = acc + "%";
             }
         }, 2100);
@@ -343,7 +375,11 @@ def inject_movable_canvas_engine():
     })();
     </script>
     """
-    components.html(canvas_js, height=0, width=0)
+    try:
+        st.html(canvas_html, unsafe_allow_javascript=True)
+    except Exception:
+        import streamlit.components.v1 as components
+        components.html(canvas_html, height=1, width=1)
 
 
 def render_landing_page():
@@ -355,12 +391,31 @@ def render_landing_page():
     # Custom CSS specifically for the Modern Landing Page
     st.markdown("""
     <style>
+        /* Transparency overrides so procedural canvas shines through background */
+        html, body,
+        .stApp,
+        [data-testid="stAppViewContainer"],
+        [data-testid="stHeader"],
+        header,
+        .main,
+        [data-testid="stMain"],
+        [data-testid="stVerticalBlock"],
+        [data-testid="stHorizontalBlock"] {
+            background: transparent !important;
+            background-color: transparent !important;
+        }
+
+        body {
+            background-color: #030712 !important;
+            overflow-x: hidden !important;
+        }
+
         .block-container {
             padding-top: 1.2rem !important;
             padding-bottom: 2.5rem !important;
             max-width: 1400px !important;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
         /* Controls Accent */
@@ -390,8 +445,9 @@ def render_landing_page():
 
         /* Top Nav Glass Header */
         .top-nav-bar {
-            background: rgba(15, 23, 42, 0.75);
+            background: rgba(15, 23, 42, 0.78);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 20px;
             padding: 16px 28px;
@@ -399,7 +455,9 @@ def render_landing_page():
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 2;
         }
 
         .nav-logo-box {
@@ -429,48 +487,48 @@ def render_landing_page():
         .brand-badge {
             background: linear-gradient(135deg, #FF4B4B, #EF4444);
             color: white;
-            font-size: 0.8rem;
-            padding: 3px 10px;
-            border-radius: 8px;
-            font-weight: 800;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
             letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
 
         .brand-sub {
-            color: #94A3B8;
             font-size: 0.88rem;
-            font-weight: 500;
+            color: #94A3B8;
             margin-top: 3px;
+            font-weight: 500;
         }
 
         .status-pill-live {
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            color: #34D399;
-            padding: 7px 18px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #10B981;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.82rem;
+            font-weight: 600;
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
 
         .pulse-dot {
-            width: 9px;
-            height: 9px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background-color: #10B981;
-            display: inline-block;
-            animation: pulseGlow 2s infinite;
+            background: #10B981;
+            animation: pulseGlow 1.8s infinite;
         }
 
         .version-pill {
             background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            color: #E2E8F0;
-            padding: 7px 16px;
-            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #CBD5E1;
+            padding: 6px 14px;
+            border-radius: 30px;
             font-size: 0.82rem;
             font-weight: 600;
         }
@@ -478,118 +536,113 @@ def render_landing_page():
         /* Live Telemetry Ribbon */
         .telemetry-ribbon-bar {
             background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 16px;
-            padding: 10px 18px;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 10px 20px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
             align-items: center;
-            justify-content: space-between;
+            justify-content: space-around;
+            gap: 16px;
             margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
         }
 
         .telemetry-chip {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 6px 14px;
-            font-size: 0.82rem;
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.2s ease;
+            font-size: 0.82rem;
         }
 
-        .telemetry-chip:hover {
-            border-color: #38BDF8;
-            background: rgba(56, 189, 248, 0.12);
-            transform: translateY(-2px);
-        }
-
-        .chip-label {
+        .telemetry-chip .chip-label {
             color: #94A3B8;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.72rem;
-            letter-spacing: 0.04em;
+            font-weight: 500;
         }
 
-        .chip-val {
-            color: #F8FAFC;
-            font-weight: 800;
-            font-family: monospace;
-            font-size: 0.88rem;
+        .telemetry-chip .chip-val {
+            color: #FFFFFF;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .chip-val.highlight-green { color: #34D399; }
-        .chip-val.highlight-cyan { color: #38BDF8; }
-        .chip-val.highlight-purple { color: #C084FC; }
+        .highlight-cyan { color: #38BDF8 !important; }
+        .highlight-green { color: #10B981 !important; }
+        .highlight-purple { color: #A855F7 !important; }
 
-        /* Hero Glassmorphic Card */
+        /* Hero Banner Card */
         .landing-hero {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(24px);
-            border: 1.5px solid rgba(99, 102, 241, 0.35);
+            background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.18), transparent 60%),
+                        radial-gradient(circle at bottom right, rgba(239, 68, 68, 0.15), transparent 60%),
+                        rgba(15, 23, 42, 0.78);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.16);
             border-radius: 24px;
-            padding: 38px 42px;
-            margin-bottom: 24px;
-            animation: heroBorderPulse 7s infinite ease-in-out;
+            padding: 40px 44px;
+            margin-bottom: 28px;
             position: relative;
             overflow: hidden;
+            animation: heroBorderPulse 8s infinite alternate ease-in-out;
+            z-index: 2;
         }
 
         .badge-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(99, 102, 241, 0.2);
-            border: 1px solid rgba(99, 102, 241, 0.4);
-            color: #A5B4FC;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #F87171;
+            padding: 6px 14px;
+            border-radius: 30px;
             font-size: 0.82rem;
             font-weight: 700;
-            padding: 5px 14px;
-            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
             margin-bottom: 18px;
         }
 
         .hero-title {
-            font-size: 2.6rem;
+            font-size: 2.85rem;
             font-weight: 800;
-            color: #FFFFFF;
             line-height: 1.18;
-            letter-spacing: -0.02em;
-            margin-bottom: 16px;
+            color: #FFFFFF;
+            letter-spacing: -0.03em;
+            margin-bottom: 18px;
         }
 
         .hero-title span {
-            background: linear-gradient(135deg, #FF4B4B, #F43F5E, #EC4899);
+            background: linear-gradient(135deg, #FF4B4B, #F43F5E, #FB7185);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .hero-desc {
-            font-size: 1.02rem;
-            color: #CBD5E1;
-            line-height: 1.6;
-            margin-bottom: 24px;
+            font-size: 1.08rem;
+            color: #94A3B8;
+            line-height: 1.68;
+            margin-bottom: 28px;
+            max-width: 680px;
         }
 
         .stat-badge-row {
             display: flex;
-            flex-wrap: wrap;
             gap: 12px;
+            flex-wrap: wrap;
         }
 
         .stat-item {
             background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.12);
             padding: 8px 16px;
             border-radius: 12px;
+            color: #E2E8F0;
             font-size: 0.85rem;
-            color: #F1F5F9;
             font-weight: 600;
         }
 
@@ -597,47 +650,38 @@ def render_landing_page():
         .auth-card {
             background: rgba(15, 23, 42, 0.82);
             backdrop-filter: blur(24px);
-            border: 1.5px solid rgba(255, 255, 255, 0.18);
-            border-radius: 22px;
-            padding: 28px 24px;
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 24px;
+            padding: 32px 30px;
             box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
             position: relative;
+            z-index: 2;
         }
 
-        .auth-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 20px;
-            right: 20px;
-            height: 3.5px;
-            background: linear-gradient(90deg, #FF4B4B, #A855F7, #38BDF8);
-            border-radius: 4px;
-        }
-
-        /* Features & Workflow */
         .feature-card {
-            background: rgba(15, 23, 42, 0.7);
+            background: rgba(15, 23, 42, 0.72);
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 18px;
-            padding: 24px 22px;
-            height: 100%;
-            transition: all 0.25s ease;
+            padding: 24px;
+            transition: transform 0.25s ease, border-color 0.25s ease;
+            position: relative;
+            z-index: 2;
         }
 
         .feature-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(56, 189, 248, 0.6);
-            box-shadow: 0 14px 32px rgba(56, 189, 248, 0.15);
+            border-color: rgba(99, 102, 241, 0.45);
         }
 
         .feature-icon-box {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border-radius: 12px;
             background: rgba(99, 102, 241, 0.2);
-            border: 1px solid rgba(99, 102, 241, 0.4);
+            border: 1px solid rgba(99, 102, 241, 0.35);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -648,7 +692,7 @@ def render_landing_page():
         .feature-title {
             font-size: 1.15rem;
             font-weight: 700;
-            color: #F8FAFC;
+            color: #FFFFFF;
             margin-bottom: 8px;
         }
 
@@ -659,25 +703,28 @@ def render_landing_page():
         }
 
         .process-step-box {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.09);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            padding: 22px;
+            position: relative;
+            z-index: 2;
         }
 
         .step-number {
-            display: inline-block;
             width: 32px;
             height: 32px;
-            line-height: 32px;
             border-radius: 50%;
             background: linear-gradient(135deg, #FF4B4B, #EF4444);
             color: white;
             font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 0.9rem;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -689,7 +736,7 @@ def render_landing_page():
             <div class="nav-logo-box">🎯</div>
             <div>
                 <div class="brand-title">
-                    AI Screener <span class="brand-badge">PRO</span>
+                    Elythra <span class="brand-badge">PRO v2.4</span>
                 </div>
                 <div class="brand-sub">
                     Enterprise AI-Powered Resume Screening & Candidate Ranking System
@@ -751,18 +798,19 @@ def render_landing_page():
             <div class="stat-badge-row">
                 <div class="stat-item">⚡ 0.09s Per Resume</div>
                 <div class="stat-item">🎯 99.4% Parsing Accuracy</div>
-                <div class="stat-item">🔒 Unbiased Demographic Stripping</div>
+                <div class="stat-item">⚖️ Unbiased Merit Scoring</div>
                 <div class="stat-item">📊 PDF / DOCX / TXT Support</div>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
         # Quick Highlights
-        st.markdown("#### 💡 Why Top Talent Teams Choose AI Screener:")
+        st.markdown("#### 💡 Why Top Talent Teams Choose Elythra:")
         st.markdown("""
         - 🚀 **Zero Manual Sifting**: Ingest entire resume batches and receive ranked shortlists in under 5 seconds.
         - ⚖️ **Recruiter-Controlled Weights**: Adjust importance for Skills, Experience, Education, and Semantic context on the fly.
         - 🔍 **Granular Skill-Gap Diagnostics**: Instantly see which required skills a candidate has (Green) and which are missing (Red).
+        - 📊 **Kaggle-Benchmarked Engine**: Validated against 2,484 real-world resumes across 24 industry sectors.
         """)
 
     with col_hero_right:
@@ -921,8 +969,7 @@ def render_landing_page():
     # 6. Social Proof Minimalist Footer (Pillar 7)
     st.markdown("""
     <div style="text-align: center; color: #64748B; font-size: 0.82rem; padding: 12px 0 24px 0; line-height: 1.6;">
-        <div><strong>AI Resume Screening & Candidate Ranking System v2.4 Enterprise</strong> • Built with Python, NLP, Streamlit & Scikit-Learn</div>
+        <div><strong>Elythra: AI Resume Screening & Candidate Ranking System v2.4 Enterprise</strong> • Built with Python, NLP, Streamlit & Scikit-Learn</div>
         <div style="margin-top: 4px; color: #475569;">2,484+ Real Resumes Evaluated • 0.09s Latency • Developed by <strong>Amandeep Verma</strong> • Bennett University Capstone</div>
     </div>
     """, unsafe_allow_html=True)
-
