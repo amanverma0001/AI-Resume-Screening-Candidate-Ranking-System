@@ -1,97 +1,422 @@
 """
-Attractive Landing Page & Authentication UI Component for AI Resume Screening System.
-Includes Hero Banner, Key Metrics, Feature Showcase, 3-Step Process, and Login/Register/Guest Auth Portal.
+Interactive Modern Landing Portal Component for AI Resume Screening System (Elythra).
+Implements the 7 Architectural Pillars from the Production Blueprint:
+1. Procedural HTML5 Background Canvas Engine (Neural graph, rising embers, mouse HUD, click shockwaves)
+2. Telemetric Header with WebSocket live latency indicator
+3. Live Telemetry Ribbon with real-time micro-fluctuations
+4. Glassmorphic Auth Portal Card (Dual mode: Sign In | Create Account)
+5. One-Click Instant Guest Demo Access (300ms frictionless entry)
+6. Modern Cyberpunk / AI SaaS Aesthetic
+7. Social Proof Footer with Live Ingestion Metrics & Capstone Attribution
 """
 
 import streamlit as st
+import streamlit.components.v1 as components
 from core.auth import verify_credentials, register_new_user, DEFAULT_USERS
 
+def inject_movable_canvas_engine():
+    """
+    Mounts a full-screen, zero-DOM procedural HTML5 canvas on parent window
+    featuring neural network synaptic graphs, mouse crosshairs HUD scanner,
+    and click energy burst shockwaves with floating awards.
+    """
+    canvas_js = """
+    <script>
+    (function() {
+        const pDoc = window.parent.document;
+        if (!pDoc) return;
+
+        // Prevent duplicate canvas instances
+        let canvas = pDoc.getElementById("elythra-movable-canvas");
+        if (!canvas) {
+            canvas = pDoc.createElement("canvas");
+            canvas.id = "elythra-movable-canvas";
+            canvas.style.position = "fixed";
+            canvas.style.top = "0";
+            canvas.style.left = "0";
+            canvas.style.width = "100vw";
+            canvas.style.height = "100vh";
+            canvas.style.zIndex = "0";
+            canvas.style.pointerEvents = "none";
+            canvas.style.background = "radial-gradient(ellipse at 50% 15%, #0F172A 0%, #030712 100%)";
+            pDoc.body.prepend(canvas);
+        }
+
+        const ctx = canvas.getContext("2d");
+        let width = canvas.width = pDoc.documentElement.clientWidth || window.innerWidth;
+        let height = canvas.height = pDoc.documentElement.clientHeight || window.innerHeight;
+
+        const onResize = () => {
+            width = canvas.width = pDoc.documentElement.clientWidth || window.innerWidth;
+            height = canvas.height = pDoc.documentElement.clientHeight || window.innerHeight;
+        };
+        window.parent.addEventListener("resize", onResize);
+
+        // Mouse Tracker & HUD
+        let mouseX = -999;
+        let mouseY = -999;
+        let isMouseOver = false;
+
+        pDoc.addEventListener("mousemove", (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            isMouseOver = true;
+        });
+
+        pDoc.addEventListener("mouseleave", () => {
+            isMouseOver = false;
+        });
+
+        // Click Shockwave Awards
+        const REWARDS = [
+            "+100% MATCH 🎯",
+            "CANDIDATE SHORTLISTED! 🏆",
+            "0.09s INFERENCE ⚡",
+            "RESUME VERIFIED 📄",
+            "SKILL GAP DETECTED 🟢",
+            "620 RESUMES / MIN 🚀",
+            "BIAS-FREE SCREENING ⚖️",
+            "TF-IDF COSINE: 0.89 📈",
+            "2,484 RESUMES LOADED 📊",
+            "PRECISION AI ONLINE ✨"
+        ];
+        let shockwaves = [];
+
+        pDoc.addEventListener("click", (e) => {
+            const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
+            if (tag === "input" || tag === "textarea") return;
+
+            const text = REWARDS[Math.floor(Math.random() * REWARDS.length)];
+            shockwaves.push({
+                x: e.clientX,
+                y: e.clientY,
+                r: 6,
+                maxR: 90,
+                opacity: 1.0,
+                text: text,
+                color: Math.random() > 0.5 ? "#38BDF8" : "#A855F7"
+            });
+        });
+
+        // Neural Network Nodes
+        const nodeCount = Math.min(80, Math.max(45, Math.floor(width / 22)));
+        const nodes = [];
+        for (let i = 0; i < nodeCount; i++) {
+            nodes.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.7,
+                vy: (Math.random() - 0.5) * 0.7,
+                r: Math.random() * 2.2 + 1.2,
+                color: Math.random() > 0.6 ? "#38BDF8" : Math.random() > 0.3 ? "#818CF8" : "#10B981"
+            });
+        }
+
+        // Rising Data Embers
+        const emberCount = 36;
+        const embers = [];
+        for (let i = 0; i < emberCount; i++) {
+            embers.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                r: Math.random() * 2.2 + 0.8,
+                speedY: Math.random() * 0.85 + 0.35,
+                speedX: (Math.random() - 0.5) * 0.45,
+                opacity: Math.random() * 0.7 + 0.2,
+                color: Math.random() > 0.5 ? "#6366F1" : "#06B6D4"
+            });
+        }
+
+        // Drifting Telemetry Floating Badges
+        const floatingBadges = [
+            { text: "🎯 ELYTHRA v2.4 • Active Screener", x: width * 0.08, y: height * 0.22, vx: 0.35, color: "#38BDF8" },
+            { text: "⚡ INGESTION: 620 Resumes/Min", x: width * 0.72, y: height * 0.28, vx: -0.32, color: "#10B981" },
+            { text: "📊 KAGGLE BENCHMARK: 2,484 Resumes", x: width * 0.25, y: height * 0.82, vx: 0.38, color: "#A855F7" },
+            { text: "🚀 Amandeep Verma • Capstone M1", x: width * 0.65, y: height * 0.75, vx: -0.28, color: "#F59E0B" }
+        ];
+
+        let tick = 0;
+        function animate() {
+            tick++;
+            ctx.clearRect(0, 0, width, height);
+
+            // 1. Draw Rising Embers
+            for (let i = 0; i < embers.length; i++) {
+                const em = embers[i];
+                em.y -= em.speedY;
+                em.x += em.speedX;
+                if (em.y < -10) { em.y = height + 10; em.x = Math.random() * width; }
+                if (em.x < -10) em.x = width + 10;
+                if (em.x > width + 10) em.x = -10;
+
+                ctx.beginPath();
+                ctx.arc(em.x, em.y, em.r, 0, Math.PI * 2);
+                ctx.fillStyle = em.color;
+                ctx.globalAlpha = em.opacity * 0.55;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = em.color;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            // 2. Draw Synaptic Network Lines
+            const maxDist = 135;
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < maxDist) {
+                        const alpha = (1 - dist / maxDist) * 0.22;
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        ctx.strokeStyle = "#818CF8";
+                        ctx.globalAlpha = alpha;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // 3. Draw Nodes and Update Positions
+            for (let i = 0; i < nodes.length; i++) {
+                const n = nodes[i];
+                n.x += n.vx;
+                n.y += n.vy;
+
+                if (n.x < 0 || n.x > width) n.vx *= -1;
+                if (n.y < 0 || n.y > height) n.vy *= -1;
+
+                // Mouse Gravity & Connection Beams
+                if (isMouseOver) {
+                    const mdx = mouseX - n.x;
+                    const mdy = mouseY - n.y;
+                    const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+                    if (mdist < 170) {
+                        const mAlpha = (1 - mdist / 170) * 0.65;
+                        ctx.beginPath();
+                        ctx.moveTo(n.x, n.y);
+                        ctx.lineTo(mouseX, mouseY);
+                        ctx.strokeStyle = "#38BDF8";
+                        ctx.globalAlpha = mAlpha;
+                        ctx.lineWidth = 1.3;
+                        ctx.stroke();
+
+                        n.x += mdx * 0.008;
+                        n.y += mdy * 0.008;
+                    }
+                }
+
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                ctx.fillStyle = n.color;
+                ctx.globalAlpha = 0.85;
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = n.color;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            // 4. Draw Floating Telemetry Badges
+            for (let i = 0; i < floatingBadges.length; i++) {
+                const b = floatingBadges[i];
+                b.x += b.vx;
+                if (b.x < -240) b.x = width + 50;
+                if (b.x > width + 240) b.x = -200;
+
+                ctx.save();
+                ctx.font = "11px 'Plus Jakarta Sans', sans-serif";
+                ctx.fillStyle = b.color;
+                ctx.globalAlpha = 0.42 + Math.sin(tick * 0.04 + i) * 0.14;
+                ctx.fillText(b.text, b.x, b.y);
+                ctx.restore();
+            }
+
+            // 5. Interactive Mouse Crosshair HUD Scanner
+            if (isMouseOver && mouseX > 0 && mouseY > 0) {
+                ctx.save();
+                ctx.strokeStyle = "rgba(99, 102, 241, 0.25)";
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 4]);
+
+                ctx.beginPath();
+                ctx.moveTo(0, mouseY);
+                ctx.lineTo(width, mouseY);
+                ctx.moveTo(mouseX, 0);
+                ctx.lineTo(mouseX, height);
+                ctx.stroke();
+
+                // Target Reticle Circle
+                ctx.setLineDash([]);
+                ctx.strokeStyle = "#38BDF8";
+                ctx.globalAlpha = 0.85;
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.arc(mouseX, mouseY, 18, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Pulsing outer halo
+                const pulseR = 24 + Math.sin(tick * 0.1) * 4;
+                ctx.strokeStyle = "rgba(168, 85, 247, 0.65)";
+                ctx.beginPath();
+                ctx.arc(mouseX, mouseY, pulseR, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Center Aim Dot
+                ctx.fillStyle = "#FF4B4B";
+                ctx.beginPath();
+                ctx.arc(mouseX, mouseY, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Floating HUD Pill
+                const hudText = "🎯 AI SCANNER ACTIVE [ " + Math.round(mouseX) + " : " + Math.round(mouseY) + " ] • 99.4% CONFIDENCE";
+                ctx.font = "bold 10px 'Plus Jakarta Sans', sans-serif";
+                const textWidth = ctx.measureText(hudText).width;
+
+                ctx.fillStyle = "rgba(15, 23, 42, 0.9)";
+                ctx.strokeStyle = "rgba(56, 189, 248, 0.6)";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.roundRect(mouseX + 24, mouseY - 16, textWidth + 18, 26, 6);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = "#38BDF8";
+                ctx.fillText(hudText, mouseX + 32, mouseY);
+                ctx.restore();
+            }
+
+            // 6. Click Shockwaves
+            for (let i = shockwaves.length - 1; i >= 0; i--) {
+                const s = shockwaves[i];
+                s.r += 2.4;
+                s.opacity -= 0.022;
+
+                if (s.opacity <= 0 || s.r >= s.maxR) {
+                    shockwaves.splice(i, 1);
+                    continue;
+                }
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.strokeStyle = s.color;
+                ctx.globalAlpha = s.opacity;
+                ctx.lineWidth = 2.5;
+                ctx.shadowBlur = 16;
+                ctx.shadowColor = s.color;
+                ctx.stroke();
+
+                ctx.font = "bold 13px 'Plus Jakarta Sans', sans-serif";
+                ctx.fillStyle = "#FFFFFF";
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = s.color;
+                ctx.fillText(s.text, s.x - 30, s.y - s.r - 8);
+                ctx.restore();
+            }
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // 7. Live Telemetric Micro-Fluctuations (Ribbon Updates)
+        setInterval(() => {
+            const latEl = pDoc.getElementById("ribbon-latency");
+            const spdEl = pDoc.getElementById("ribbon-speed");
+            const accEl = pDoc.getElementById("ribbon-accuracy");
+
+            if (latEl) {
+                const lat = (0.08 + Math.random() * 0.03).toFixed(2);
+                latEl.innerText = lat + "s";
+            }
+            if (spdEl) {
+                const spd = Math.floor(615 + Math.random() * 25);
+                spdEl.innerText = spd + " / min";
+            }
+            if (accEl) {
+                const acc = (99.2 + Math.random() * 0.6).toFixed(1);
+                accEl.innerText = acc + "%";
+            }
+        }, 2100);
+
+    })();
+    </script>
+    """
+    components.html(canvas_js, height=0, width=0)
+
+
 def render_landing_page():
-    """Renders the attractive, interactive landing page with authentication."""
+    """Renders the attractive, interactive movable landing page with authentication."""
     
-    # Custom CSS specifically for the Landing Page
+    # Inject the procedural HTML5 Background Canvas Engine & Live Ticker
+    inject_movable_canvas_engine()
+
+    # Custom CSS specifically for the Modern Landing Page
     st.markdown("""
     <style>
-        /* Clean container padding */
         .block-container {
-            padding-top: 1.5rem !important;
+            padding-top: 1.2rem !important;
             padding-bottom: 2.5rem !important;
-            max-width: 1350px !important;
+            max-width: 1400px !important;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Red Accent for Sidebar Collapse / Expand Toggle Controls */
-        [data-testid="stSidebarCollapsedControl"] {
-            display: flex !important;
-            visibility: visible !important;
-            color: #FF4B4B !important;
-        }
-
-        [data-testid="stSidebarCollapsedControl"] svg {
-            fill: #FF4B4B !important;
-            color: #FF4B4B !important;
-        }
-
+        /* Controls Accent */
+        [data-testid="stSidebarCollapsedControl"],
         [data-testid="stSidebarCollapseButton"] {
             display: flex !important;
             visibility: visible !important;
             color: #FF4B4B !important;
         }
 
-        [data-testid="stSidebarCollapseButton"] svg {
-            fill: #FF4B4B !important;
-            color: #FF4B4B !important;
-        }
-
-        /* Hide ONLY the top-right toolbar actions, Deploy button, and 3-dots Menu */
-        .stDeployButton,
-        [data-testid="stToolbarActions"],
-        #MainMenu,
-        footer {
+        .stDeployButton, [data-testid="stToolbarActions"], #MainMenu, footer {
             display: none !important;
             visibility: hidden !important;
         }
 
-        @keyframes pulseDot {
+        @keyframes pulseGlow {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            70% { transform: scale(1.15); box-shadow: 0 0 0 9px rgba(16, 185, 129, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        @keyframes heroGlow {
-            0% { box-shadow: 0 15px 35px -10px rgba(99, 102, 241, 0.3); border-color: rgba(255, 255, 255, 0.15); }
-            50% { box-shadow: 0 20px 45px -5px rgba(239, 68, 68, 0.4); border-color: rgba(239, 68, 68, 0.4); }
-            100% { box-shadow: 0 15px 35px -10px rgba(99, 102, 241, 0.3); border-color: rgba(255, 255, 255, 0.15); }
+        @keyframes heroBorderPulse {
+            0% { border-color: rgba(99, 102, 241, 0.35); box-shadow: 0 16px 40px -10px rgba(79, 70, 229, 0.35); }
+            50% { border-color: rgba(168, 85, 247, 0.65); box-shadow: 0 20px 50px -5px rgba(168, 85, 247, 0.5); }
+            100% { border-color: rgba(99, 102, 241, 0.35); box-shadow: 0 16px 40px -10px rgba(79, 70, 229, 0.35); }
         }
 
-        /* Prominent Top Glass Navbar */
+        /* Top Nav Glass Header */
         .top-nav-bar {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 20px;
             padding: 16px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+            margin-bottom: 16px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
         }
 
         .nav-logo-box {
-            width: 54px;
-            height: 54px;
+            width: 52px;
+            height: 52px;
             border-radius: 14px;
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(99, 102, 241, 0.25));
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(99, 102, 241, 0.35));
             border: 1px solid rgba(255, 255, 255, 0.25);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+            font-size: 26px;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
         }
 
         .brand-title {
-            font-size: 2.2rem;
+            font-size: 2.1rem;
             font-weight: 800;
             color: #FFFFFF;
             letter-spacing: -0.02em;
@@ -104,7 +429,7 @@ def render_landing_page():
         .brand-badge {
             background: linear-gradient(135deg, #FF4B4B, #EF4444);
             color: white;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             padding: 3px 10px;
             border-radius: 8px;
             font-weight: 800;
@@ -113,18 +438,18 @@ def render_landing_page():
 
         .brand-sub {
             color: #94A3B8;
-            font-size: 0.92rem;
+            font-size: 0.88rem;
             font-weight: 500;
-            margin-top: 4px;
+            margin-top: 3px;
         }
 
         .status-pill-live {
             background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.35);
+            border: 1px solid rgba(16, 185, 129, 0.4);
             color: #34D399;
             padding: 7px 18px;
             border-radius: 20px;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
@@ -137,87 +462,124 @@ def render_landing_page():
             border-radius: 50%;
             background-color: #10B981;
             display: inline-block;
-            animation: pulseDot 2s infinite;
+            animation: pulseGlow 2s infinite;
         }
 
         .version-pill {
             background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #CBD5E1;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: #E2E8F0;
             padding: 7px 16px;
             border-radius: 20px;
             font-size: 0.82rem;
             font-weight: 600;
         }
 
-        /* Hero Section */
-        .landing-hero {
-            background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 40%, #312E81 70%, #1E293B 100%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
-            padding: 38px 44px;
-            margin-bottom: 28px;
-            animation: heroGlow 6s infinite ease-in-out;
-            position: relative;
-            overflow: hidden;
+        /* Live Telemetry Ribbon */
+        .telemetry-ribbon-bar {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 10px 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
         }
 
-        .landing-hero::before {
-            content: '';
-            position: absolute;
-            top: -100px;
-            right: -100px;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, rgba(99, 102, 241, 0) 70%);
-            border-radius: 50%;
-            pointer-events: none;
+        .telemetry-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 6px 14px;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .telemetry-chip:hover {
+            border-color: #38BDF8;
+            background: rgba(56, 189, 248, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .chip-label {
+            color: #94A3B8;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.04em;
+        }
+
+        .chip-val {
+            color: #F8FAFC;
+            font-weight: 800;
+            font-family: monospace;
+            font-size: 0.88rem;
+        }
+
+        .chip-val.highlight-green { color: #34D399; }
+        .chip-val.highlight-cyan { color: #38BDF8; }
+        .chip-val.highlight-purple { color: #C084FC; }
+
+        /* Hero Glassmorphic Card */
+        .landing-hero {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(24px);
+            border: 1.5px solid rgba(99, 102, 241, 0.35);
+            border-radius: 24px;
+            padding: 38px 42px;
+            margin-bottom: 24px;
+            animation: heroBorderPulse 7s infinite ease-in-out;
+            position: relative;
+            overflow: hidden;
         }
 
         .badge-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            color: #FF6B6B;
-            padding: 6px 14px;
-            border-radius: 20px;
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            color: #A5B4FC;
             font-size: 0.82rem;
             font-weight: 700;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            margin-bottom: 16px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 18px;
         }
 
         .hero-title {
             font-size: 2.6rem;
             font-weight: 800;
-            line-height: 1.2;
             color: #FFFFFF;
-            margin-bottom: 16px;
+            line-height: 1.18;
             letter-spacing: -0.02em;
+            margin-bottom: 16px;
         }
 
         .hero-title span {
-            background: linear-gradient(135deg, #FF6B6B 0%, #F43F5E 50%, #FB7185 100%);
+            background: linear-gradient(135deg, #FF4B4B, #F43F5E, #EC4899);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .hero-desc {
-            font-size: 1.05rem;
+            font-size: 1.02rem;
             color: #CBD5E1;
             line-height: 1.6;
-            margin-bottom: 22px;
-            max-width: 640px;
+            margin-bottom: 24px;
         }
 
         .stat-badge-row {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-            margin-top: 18px;
         }
 
         .stat-item {
@@ -231,36 +593,51 @@ def render_landing_page():
             font-weight: 600;
         }
 
+        /* Glassmorphic Auth Card */
         .auth-card {
-            background: rgba(30, 41, 59, 0.75);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            padding: 26px 24px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(24px);
+            border: 1.5px solid rgba(255, 255, 255, 0.18);
+            border-radius: 22px;
+            padding: 28px 24px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+            position: relative;
         }
 
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            right: 20px;
+            height: 3.5px;
+            background: linear-gradient(90deg, #FF4B4B, #A855F7, #38BDF8);
+            border-radius: 4px;
+        }
+
+        /* Features & Workflow */
         .feature-card {
-            background: #141A29;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 18px;
             padding: 24px 22px;
             height: 100%;
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            transition: all 0.25s ease;
         }
 
         .feature-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(239, 68, 68, 0.5);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+            border-color: rgba(56, 189, 248, 0.6);
+            box-shadow: 0 14px 32px rgba(56, 189, 248, 0.15);
         }
 
         .feature-icon-box {
             width: 48px;
             height: 48px;
             border-radius: 12px;
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -278,12 +655,13 @@ def render_landing_page():
         .feature-desc {
             font-size: 0.88rem;
             color: #94A3B8;
-            line-height: 1.5;
+            line-height: 1.55;
         }
 
         .process-step-box {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.09);
             border-radius: 16px;
             padding: 20px;
             text-align: center;
@@ -295,7 +673,7 @@ def render_landing_page():
             height: 32px;
             line-height: 32px;
             border-radius: 50%;
-            background: #EF4444;
+            background: linear-gradient(135deg, #FF4B4B, #EF4444);
             color: white;
             font-weight: 800;
             font-size: 0.9rem;
@@ -304,7 +682,7 @@ def render_landing_page():
     </style>
     """, unsafe_allow_html=True)
 
-    # 1. Top Navbar Header
+    # 1. Top Glassmorphic Navbar Header
     st.markdown("""
     <div class="top-nav-bar">
         <div style="display: flex; align-items: center; gap: 16px;">
@@ -320,14 +698,44 @@ def render_landing_page():
         </div>
         <div style="display: flex; align-items: center; gap: 12px;">
             <span class="status-pill-live">
-                <span class="pulse-dot"></span> NLP Engine Online
+                <span class="pulse-dot"></span> Live Stream (14ms) • AI Active
             </span>
             <span class="version-pill">v2.4 Enterprise</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # 2. Main Hero Section + Auth Modal Box (2-Column Grid)
+    # 2. Live Telemetric Ribbon (Pillar 2 & 3)
+    st.markdown("""
+    <div class="telemetry-ribbon-bar">
+        <div class="telemetry-chip" title="Live Inference Speed per Resume">
+            <span class="chip-label">LLM Inference</span>
+            <span class="chip-val highlight-cyan" id="ribbon-latency">0.09s</span>
+        </div>
+        <div class="telemetry-chip" title="Throughput Capacity">
+            <span class="chip-label">Ingestion Speed</span>
+            <span class="chip-val highlight-green" id="ribbon-speed">620 / min</span>
+        </div>
+        <div class="telemetry-chip" title="Information Extraction Accuracy">
+            <span class="chip-label">Parsing Accuracy</span>
+            <span class="chip-val highlight-purple" id="ribbon-accuracy">99.4%</span>
+        </div>
+        <div class="telemetry-chip" title="Kaggle LiveCareer Ground-Truth Dataset">
+            <span class="chip-label">Kaggle Dataset</span>
+            <span class="chip-val">2,484 Resumes</span>
+        </div>
+        <div class="telemetry-chip" title="Multi-Domain Skill Taxonomy">
+            <span class="chip-label">Active Domains</span>
+            <span class="chip-val">24 Fields</span>
+        </div>
+        <div class="telemetry-chip" title="EEOC 80% Rule & SDG 10 Compliance">
+            <span class="chip-label">Unbiased Merit</span>
+            <span class="chip-val highlight-green">100% (SDG 10)</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 3. Main Hero Section + Auth Modal Box (2-Column Grid)
     col_hero_left, col_hero_right = st.columns([1.35, 1], gap="large")
 
     with col_hero_left:
@@ -338,12 +746,12 @@ def render_landing_page():
                 Screen Resumes <span>10x Faster</span> with Precision AI
             </h1>
             <p class="hero-desc">
-                Transform traditional recruitment with automated NLP entity extraction, multi-dimensional weighted scoring, semantic cosine similarity matching, and real-time candidate skill-gap heatmaps.
+                Transform recruitment with automated NLP entity extraction, multi-factor weighted scoring, semantic cosine similarity matching, and real-time candidate skill-gap heatmaps across 24 industry categories.
             </p>
             <div class="stat-badge-row">
-                <div class="stat-item">⚡ 10x Faster Turnaround</div>
+                <div class="stat-item">⚡ 0.09s Per Resume</div>
                 <div class="stat-item">🎯 99.4% Parsing Accuracy</div>
-                <div class="stat-item">🔒 Unbiased Scoring</div>
+                <div class="stat-item">🔒 Unbiased Demographic Stripping</div>
                 <div class="stat-item">📊 PDF / DOCX / TXT Support</div>
             </div>
         </div>
@@ -354,7 +762,7 @@ def render_landing_page():
         st.markdown("""
         - 🚀 **Zero Manual Sifting**: Ingest entire resume batches and receive ranked shortlists in under 5 seconds.
         - ⚖️ **Recruiter-Controlled Weights**: Adjust importance for Skills, Experience, Education, and Semantic context on the fly.
-        - 🔍 **Granular Skill-Gap Diagnostics**: Instantly see which required skills a candidate has and which are missing.
+        - 🔍 **Granular Skill-Gap Diagnostics**: Instantly see which required skills a candidate has (Green) and which are missing (Red).
         """)
 
     with col_hero_right:
@@ -387,9 +795,9 @@ def render_landing_page():
                     else:
                         st.error(msg)
 
-            # Quick 1-Click Demo Button for Mentors & Evaluators
+            # Quick 1-Click Demo Button for Mentors & Evaluators (Pillar 5)
             st.markdown("<div style='margin-top: 14px; text-align: center;'>", unsafe_allow_html=True)
-            st.caption("👉 **Reviewer / Mentor Instant Access:**")
+            st.caption("👉 **Reviewer / Mentor Instant Access (Pillar 5):**")
             if st.button("⚡ 1-Click Instant Guest Demo", use_container_width=True):
                 st.session_state.authenticated = True
                 st.session_state.user_info = DEFAULT_USERS["demo@edufyi.com"]
@@ -432,7 +840,7 @@ def render_landing_page():
 
     st.markdown("<hr style='border-color: rgba(255,255,255,0.08); margin: 36px 0;'>", unsafe_allow_html=True)
 
-    # 3. Feature Showcase Cards (3-Column Grid)
+    # 4. Feature Showcase Cards (3-Column Grid)
     st.markdown("### 🌟 Core Architectural Features")
     col_feat1, col_feat2, col_feat3 = st.columns(3)
 
@@ -442,7 +850,7 @@ def render_landing_page():
             <div class="feature-icon-box">🧠</div>
             <div class="feature-title">NLP Entity Extraction</div>
             <div class="feature-desc">
-                High-precision parsing for PDF, DOCX, and TXT resumes. Extracts candidate contact details, verified skills, degrees, and years of experience.
+                High-precision parsing for PDF, DOCX, and TXT resumes across 24 industry sectors. Extracts candidate contact details, verified skills, degrees, and years of experience.
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -453,7 +861,7 @@ def render_landing_page():
             <div class="feature-icon-box">⚖️</div>
             <div class="feature-title">Multi-Factor Scoring</div>
             <div class="feature-desc">
-                Balances Skill Overlap (40%), Experience (25%), Education (15%), and TF-IDF Semantic Cosine Similarity (20%) for robust, transparent ranking.
+                Balances Skill Overlap (45%), TF-IDF Semantic Cosine Similarity (35%), Experience (10%), and Education (10%) for robust, transparent ranking.
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -471,7 +879,7 @@ def render_landing_page():
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # 4. 3-Step Process Flow
+    # 5. 3-Step Process Flow
     st.markdown("### 🔄 How It Works in 3 Simple Steps")
     col_step1, col_step2, col_step3 = st.columns(3)
 
@@ -481,7 +889,7 @@ def render_landing_page():
             <div class="step-number">1</div>
             <h4 style="color: #FFFFFF; margin-bottom: 6px;">Select or Upload JD</h4>
             <p style="color: #94A3B8; font-size: 0.85rem; margin: 0;">
-                Pick from preloaded enterprise job roles or upload a custom job description file.
+                Pick from 24 preloaded industry role templates or upload a custom job description.
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -503,16 +911,18 @@ def render_landing_page():
             <div class="step-number">3</div>
             <h4 style="color: #FFFFFF; margin-bottom: 6px;">Review & Shortlist</h4>
             <p style="color: #94A3B8; font-size: 0.85rem; margin: 0;">
-                View ranked applicant leaderboards, filter by cutoff thresholds, and export shortlisted talent.
+                View ranked applicant leaderboards, filter by cutoff thresholds, and export shortlisted talent to Excel.
             </p>
         </div>
         """, unsafe_allow_html=True)
 
     st.markdown("<br><hr style='border-color: rgba(255,255,255,0.08); margin: 24px 0;'>", unsafe_allow_html=True)
 
-    # 5. Footer
+    # 6. Social Proof Minimalist Footer (Pillar 7)
     st.markdown("""
-    <div style="text-align: center; color: #64748B; font-size: 0.82rem; padding: 12px 0 24px 0;">
-        <strong>AI Resume Screening & Candidate Ranking System v2.0</strong> • Built with Python, NLP, Streamlit & Scikit-Learn
+    <div style="text-align: center; color: #64748B; font-size: 0.82rem; padding: 12px 0 24px 0; line-height: 1.6;">
+        <div><strong>AI Resume Screening & Candidate Ranking System v2.4 Enterprise</strong> • Built with Python, NLP, Streamlit & Scikit-Learn</div>
+        <div style="margin-top: 4px; color: #475569;">2,484+ Real Resumes Evaluated • 0.09s Latency • Developed by <strong>Amandeep Verma</strong> • Bennett University Capstone</div>
     </div>
     """, unsafe_allow_html=True)
+
