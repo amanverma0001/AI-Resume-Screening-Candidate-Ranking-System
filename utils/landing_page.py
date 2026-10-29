@@ -1,17 +1,17 @@
 """
 Interactive Modern Landing Portal Component for AI Resume Screening System (Elythra).
-Compact, zero-scroll centered panel with pure 60 FPS moving resume candidate match stream background.
-Guaranteed clickable, responsive, and uncluttered.
+100% Borderless, ultra-clean floating recruiter panel with pure 60 FPS moving resume candidate match stream background.
+Zero-scroll, fully responsive, and 100% clickable.
 """
 
 import streamlit as st
 from core.auth import verify_credentials, register_new_user, DEFAULT_USERS
 
 def render_landing_page():
-    """Renders the compact, zero-scroll recruiter command center."""
+    """Renders the authentic borderless recruiter landing portal."""
 
     st.markdown("""<style>
-/* 1. SCROLLING 100% OFF (VIEWPORT LOCKED) */
+/* 1. VIEWPORT LOCKED & SCROLLING COMPLETELY OFF */
 html, body {
 overflow: hidden !important;
 height: 100vh !important;
@@ -41,9 +41,9 @@ display: none !important;
 visibility: hidden !important;
 }
 
-/* 2. CONTAINER POSITIONING & VERTICAL CENTERING */
+/* 2. CENTERED POSITIONING (ZERO SCROLL, PERFECT VERTICAL BALANCE) */
 .block-container {
-padding-top: calc(50vh - 275px) !important;
+padding-top: calc(50vh - 280px) !important;
 padding-bottom: 0 !important;
 padding-left: 1rem !important;
 padding-right: 1rem !important;
@@ -53,8 +53,36 @@ z-index: 10 !important;
 pointer-events: auto !important;
 }
 
-/* 3. MOVING CANDIDATE RANKING BACKGROUND (STRICTLY NON-BLOCKING) */
-.resume-bg-root, .resume-bg-root * {
+/* 3. 100% BORDERLESS & TRANSPARENT PANEL (NO CARD, NO BORDER, NO SHADOW BOX) */
+div[data-testid="column"]:nth-of-type(2), 
+[data-testid="stHorizontalBlock"] > div:nth-child(2), 
+[data-testid="stVerticalBlockBorderWrapper"], 
+[data-testid="stForm"],
+div[data-testid="stVerticalBlock"] {
+background: transparent !important;
+background-color: transparent !important;
+border: none !important;
+box-shadow: none !important;
+backdrop-filter: none !important;
+-webkit-backdrop-filter: none !important;
+}
+
+div[data-testid="column"]:nth-of-type(2) {
+position: relative !important;
+z-index: 100 !important;
+pointer-events: auto !important;
+}
+
+/* 4. MOVING CANDIDATE BACKGROUND (STRICTLY NON-BLOCKING POINTER EVENTS) */
+.resume-bg-root, 
+.resume-bg-root *, 
+.chart-scroll-track, 
+.chart-scroll-track svg, 
+.chart-scroll-track path, 
+.chart-scroll-track circle,
+.y-axis-talent-tiers,
+.live-match-pill,
+.float-resume-badge {
 pointer-events: none !important;
 user-select: none !important;
 }
@@ -140,62 +168,110 @@ box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
 @keyframes resumeBadgeFloat3 { 0% { transform: translate(0, 0); } 100% { transform: translate(18px, 12px); } }
 @keyframes resumeBadgeFloat4 { 0% { transform: translate(0, 0); } 100% { transform: translate(-16px, -14px); } }
 
-/* 4. COMPACT GLASSMORPHIC CARD (CENTER COLUMN) */
-div[data-testid="column"]:nth-of-type(2), [data-testid="stHorizontalBlock"] > div:nth-child(2) {
-background: rgba(13, 20, 36, 0.94) !important;
-backdrop-filter: blur(32px) !important;
--webkit-backdrop-filter: blur(32px) !important;
-border: 1px solid rgba(59, 130, 246, 0.42) !important;
-border-radius: 20px !important;
-padding: 22px 24px !important;
-box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(37, 99, 235, 0.25) !important;
-position: relative !important;
-z-index: 100 !important;
-pointer-events: auto !important;
-}
-
-/* 5. FORM & INTERACTIVE WIDGETS (STRICTLY CLICKABLE) */
-[data-testid="stForm"] {
-border: none !important;
-padding: 0 !important;
-background: transparent !important;
-position: relative !important;
-z-index: 105 !important;
-pointer-events: auto !important;
-}
-button, input, [data-baseweb="tab"], [data-baseweb="checkbox"], [data-baseweb="tab-list"], label {
+/* 5. INTERACTIVE FORM ELEMENTS (STRICTLY CLICKABLE WITH HIGH Z-INDEX) */
+button, 
+input, 
+[data-testid="stForm"], 
+.stButton, 
+.stButton > button,
+[data-baseweb="tab"], 
+[data-baseweb="checkbox"], 
+[data-baseweb="tab-list"], 
+label {
 pointer-events: auto !important;
 cursor: pointer !important;
 position: relative !important;
-z-index: 110 !important;
+z-index: 9999 !important;
 }
-input[type="text"], input[type="password"] {
-cursor: text !important;
-background: #111B2C !important;
-border: 1px solid rgba(59, 130, 246, 0.35) !important;
+
+/* 1-Click Instant Demo Button (matches 1st screenshot) */
+.stButton > button[kind="secondary"], 
+div[data-testid="stButton"] > button:not([kind="primary"]) {
+background: #111827 !important;
+border: 1px solid rgba(255, 255, 255, 0.12) !important;
 color: #FFFFFF !important;
 border-radius: 8px !important;
+padding: 8px 16px !important;
+font-weight: 600 !important;
+font-size: 0.88rem !important;
+transition: all 0.2s ease !important;
+}
+.stButton > button[kind="secondary"]:hover,
+div[data-testid="stButton"] > button:not([kind="primary"]):hover {
+background: #1E293B !important;
+border-color: #38BDF8 !important;
+color: #38BDF8 !important;
+box-shadow: 0 0 14px rgba(56, 189, 248, 0.25) !important;
+}
+
+/* Primary Submit Button (coral red gradient from 1st screenshot) */
+button[kind="primary"],
+.stButton > button[kind="primary"],
+div[data-testid="stFormSubmitButton"] > button {
+background: linear-gradient(135deg, #EF4444, #F43F5E) !important;
+border: none !important;
+color: #FFFFFF !important;
+border-radius: 8px !important;
+padding: 10px 16px !important;
+font-weight: 700 !important;
+font-size: 0.92rem !important;
+box-shadow: 0 4px 18px rgba(239, 68, 68, 0.45) !important;
+transition: all 0.2s ease !important;
+}
+button[kind="primary"]:hover,
+div[data-testid="stFormSubmitButton"] > button:hover {
+box-shadow: 0 6px 24px rgba(239, 68, 68, 0.7) !important;
+transform: translateY(-1px) !important;
+}
+
+/* Input Fields (Dark blue-gray matching 1st screenshot) */
+input[type="text"], input[type="password"] {
+cursor: text !important;
+background: #151D2A !important;
+border: 1px solid rgba(255, 255, 255, 0.08) !important;
+color: #FFFFFF !important;
+border-radius: 8px !important;
+font-size: 0.88rem !important;
 }
 input[type="text"]:focus, input[type="password"]:focus {
 border-color: #38BDF8 !important;
-box-shadow: 0 0 12px rgba(56, 189, 248, 0.35) !important;
+box-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
 }
 
-/* 6. TYPOGRAPHY & MICRO-BADGES */
+/* Tab Underline & Styling */
+[data-baseweb="tab-list"] {
+background: transparent !important;
+border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+gap: 16px !important;
+}
+[data-baseweb="tab"] {
+color: #94A3B8 !important;
+font-size: 0.85rem !important;
+font-weight: 600 !important;
+background: transparent !important;
+padding: 6px 4px !important;
+border: none !important;
+}
+[aria-selected="true"] {
+color: #EF4444 !important;
+border-bottom: 2px solid #EF4444 !important;
+}
+
+/* 6. TYPOGRAPHY & BADGE */
 .compact-icon-badge {
-width: 46px;
-height: 46px;
+width: 48px;
+height: 48px;
 border-radius: 14px;
 background: linear-gradient(135deg, #1D4ED8, #3B82F6);
 display: flex;
 align-items: center;
 justify-content: center;
-font-size: 22px;
-margin: 0 auto 10px auto;
-box-shadow: 0 6px 20px rgba(37, 99, 235, 0.55);
+font-size: 24px;
+margin: 0 auto 12px auto;
+box-shadow: 0 0 24px rgba(59, 130, 246, 0.65);
 }
 .compact-title {
-font-size: 1.75rem;
+font-size: 2.2rem;
 font-weight: 800;
 color: #FFFFFF;
 text-align: center;
@@ -204,24 +280,11 @@ letter-spacing: -0.02em;
 line-height: 1.15;
 }
 .compact-sub {
-font-size: 0.78rem;
+font-size: 0.85rem;
 color: #94A3B8;
 text-align: center;
-margin: 0 0 14px 0;
+margin: 0 0 16px 0;
 font-weight: 500;
-}
-.compact-hint {
-font-size: 0.72rem;
-color: #64748B;
-text-align: center;
-margin-top: 10px;
-}
-.compact-hint code {
-color: #38BDF8;
-background: rgba(56, 189, 248, 0.08);
-padding: 1px 5px;
-border-radius: 4px;
-font-size: 0.72rem;
 }
 </style>""", unsafe_allow_html=True)
 
@@ -235,9 +298,10 @@ font-size: 0.72rem;
 <div>85% HIGH POTENTIAL</div>
 <div>80% QUALIFIED</div>
 <div>75% COMPETENT</div>
+<div>70% BASELINE</div>
 </div>
 <div class="live-match-pill">99.4% MATCH</div>
-<div class="float-resume-badge badge-top-cand">⚖️ 100% Unbiased Merit Ranking • SDG 10</div>
+<div class="float-resume-badge badge-top-cand">📄 Rahul Sharma • Full Stack • 98.4% Match</div>
 <div class="float-resume-badge badge-nlp-speed">⚡ NLP Parser • 0.09s Sub-Second</div>
 <div class="float-resume-badge badge-dataset">📊 2,484 Kaggle Resumes • 24 Domains</div>
 <div class="float-resume-badge badge-architect">📄 Amandeep Verma • AI Architect • 99.8%</div>
@@ -277,7 +341,7 @@ font-size: 0.72rem;
 </div>
 </div>""", unsafe_allow_html=True)
 
-    # Centered Compact Card
+    # 100% Borderless, Floating Centered Panel (Exact 1st Screenshot Look)
     col_l, col_center, col_r = st.columns([1.25, 1.0, 1.25])
     with col_center:
         st.markdown("""<div class="compact-icon-badge">🎯</div>
@@ -287,13 +351,13 @@ font-size: 0.72rem;
         auth_tab_login, auth_tab_register = st.tabs(["🔑 Sign In", "📝 Register"])
 
         with auth_tab_login:
-            if st.button("⚡ 1-Click Instant Demo (Amandeep Verma)", use_container_width=True, key="compact_demo_btn"):
+            if st.button("⚡ 1-Click Instant Demo (Amandeep Verma)", use_container_width=True, key="borderless_demo_btn"):
                 st.session_state.authenticated = True
                 st.session_state.user_info = DEFAULT_USERS["demo@edufyi.com"]
-                st.success("🎉 Welcome! Entering Command Center...")
+                st.success("🎉 Access Granted! Welcome Amandeep Verma...")
                 st.rerun()
 
-            with st.form("compact_login_form", clear_on_submit=False):
+            with st.form("borderless_login_form", clear_on_submit=False):
                 user_email = st.text_input("📧 Work Email", value="amandeepverma3001@gmail.com", placeholder="recruiter@company.com")
                 user_pass = st.text_input("🔒 Password", value="demo123", type="password", placeholder="••••••••")
                 keep_logged = st.checkbox("Keep active recruiter session open", value=True)
@@ -307,15 +371,11 @@ font-size: 0.72rem;
                         "org": "Bennett University",
                         "role": "Lead Architect"
                     }
-                    st.success("🎉 Access Granted! Loading...")
+                    st.success("🎉 Authentication successful! Loading...")
                     st.rerun()
 
-            st.markdown("""<div class="compact-hint">
-Demo Account: <code>amandeepverma3001@gmail.com</code> | Pass: <code>demo123</code>
-</div>""", unsafe_allow_html=True)
-
         with auth_tab_register:
-            with st.form("compact_register_form", clear_on_submit=True):
+            with st.form("borderless_register_form", clear_on_submit=True):
                 reg_name = st.text_input("Full Name", placeholder="e.g. Rahul Sharma")
                 reg_email = st.text_input("Work Email", placeholder="e.g. rahul@techcorp.com")
                 reg_password = st.text_input("Password", type="password", placeholder="Min 4 chars")
