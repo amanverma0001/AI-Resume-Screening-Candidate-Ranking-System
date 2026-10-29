@@ -1,33 +1,38 @@
 """
 Interactive Modern Landing Portal Component for AI Resume Screening System (Elythra).
-Zenith-Style Cyber Blue Design System Themed for AI Talent Intelligence & Candidate Ranking:
-- Live Moving Candidate Match Stream & Similarity Curve Background (60 FPS)
-- Floating Resume Badges & Right-side Talent Tier Metrics
-- Top Header with Live NLP Engine Indicator & Navigation
-- Real-Time Talent Intelligence Ticker Ribbon
-- Centered "Recruiter Command Center" Glass Card
-- 1-Click Instant Recruiter Demo Access (Amandeep Verma)
+Compact, zero-scroll centered panel with pure 60 FPS moving resume candidate match stream background.
 """
 
 import streamlit as st
 from core.auth import verify_credentials, register_new_user, DEFAULT_USERS
 
 def render_landing_page():
-    """Renders the authentic Elythra AI Recruiter Command Center landing portal."""
+    """Renders the compact, zero-scroll recruiter command center."""
 
     st.markdown("""<style>
+/* 1. SCROLLING 100% OFF & FULL TRANSPARENCY */
 html, body, [data-testid="stApp"], .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"], header, .main, [data-testid="stMain"], [data-testid="stVerticalBlock"], [data-testid="stHorizontalBlock"] {
 background: transparent !important;
 background-color: transparent !important;
+overflow: hidden !important;
+overflow-y: hidden !important;
+overflow-x: hidden !important;
+height: 100vh !important;
+max-height: 100vh !important;
 }
 body {
 background-color: #080C14 !important;
-overflow-x: hidden !important;
 }
+/* 2. CENTERED BLOCK CONTAINER (NO SCROLL, PURE VERTICAL CENTERING) */
 .block-container {
-padding-top: 0.8rem !important;
-padding-bottom: 1.5rem !important;
-max-width: 1400px !important;
+padding: 0 !important;
+max-width: 420px !important;
+height: 100vh !important;
+display: flex !important;
+flex-direction: column !important;
+justify-content: center !important;
+align-items: center !important;
+margin: 0 auto !important;
 position: relative !important;
 z-index: 2 !important;
 }
@@ -36,11 +41,10 @@ display: none !important;
 visibility: hidden !important;
 }
 [data-testid="stSidebarCollapsedControl"], [data-testid="stSidebarCollapseButton"] {
-display: flex !important;
-visibility: visible !important;
-color: #3B82F6 !important;
+display: none !important;
+visibility: hidden !important;
 }
-/* Fullscreen Fixed Moving Resume & Candidate Ranking Stream Background */
+/* 3. FULLSCREEN MOVING BACKGROUND (CANDIDATE SIMILARITY STREAM) */
 .resume-bg-root {
 position: fixed !important;
 top: 0 !important;
@@ -49,7 +53,7 @@ width: 100vw !important;
 height: 100vh !important;
 z-index: 0 !important;
 pointer-events: none !important;
-background: radial-gradient(ellipse at 50% 20%, #0E1726 0%, #080C14 80%) !important;
+background: radial-gradient(ellipse at 50% 25%, #0F192C 0%, #080C14 85%) !important;
 overflow: hidden !important;
 }
 .resume-grid-mesh {
@@ -79,11 +83,11 @@ right: 18px;
 top: 14%;
 display: flex;
 flex-direction: column;
-gap: 26px;
+gap: 24px;
 font-family: "JetBrains Mono", monospace;
-font-size: 11px;
+font-size: 10px;
 font-weight: 700;
-color: rgba(255, 255, 255, 0.22);
+color: rgba(255, 255, 255, 0.18);
 text-align: right;
 pointer-events: none;
 letter-spacing: 0.04em;
@@ -91,198 +95,96 @@ letter-spacing: 0.04em;
 .live-match-pill {
 position: absolute;
 right: 8px;
-top: 45%;
+top: 48%;
 background: linear-gradient(135deg, #10B981, #059669);
 color: #FFFFFF;
 font-family: "JetBrains Mono", monospace;
-font-size: 11px;
+font-size: 10px;
 font-weight: 800;
-padding: 4px 10px;
+padding: 3px 8px;
 border-radius: 4px;
-box-shadow: 0 0 16px rgba(16, 185, 129, 0.7);
+box-shadow: 0 0 14px rgba(16, 185, 129, 0.65);
 }
 .float-resume-badge {
 position: absolute;
 background: rgba(14, 21, 37, 0.85);
 backdrop-filter: blur(12px);
 -webkit-backdrop-filter: blur(12px);
-border: 1px solid rgba(56, 189, 248, 0.3);
-border-radius: 20px;
-padding: 6px 14px;
-font-size: 0.78rem;
+border: 1px solid rgba(56, 189, 248, 0.28);
+border-radius: 18px;
+padding: 5px 12px;
+font-size: 0.74rem;
 font-weight: 700;
 display: inline-flex;
 align-items: center;
-gap: 7px;
-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+gap: 6px;
+box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
 }
-.badge-top-cand { top: 20%; left: 45%; animation: resumeBadgeFloat1 8s ease-in-out infinite alternate; color: #10B981; }
-.badge-nlp-speed { top: 26%; right: 10%; animation: resumeBadgeFloat2 9s ease-in-out infinite alternate; color: #38BDF8; }
-.badge-dataset { bottom: 10%; left: 14%; animation: resumeBadgeFloat3 10s ease-in-out infinite alternate; color: #A855F7; }
-.badge-architect { bottom: 15%; right: 12%; animation: resumeBadgeFloat4 7s ease-in-out infinite alternate; color: #10B981; }
-.badge-sdg10 { top: 38%; left: 10%; animation: resumeBadgeFloat1 11s ease-in-out infinite alternate; color: #F59E0B; }
+.badge-top-cand { top: 16%; left: 8%; animation: resumeBadgeFloat1 8s ease-in-out infinite alternate; color: #10B981; }
+.badge-nlp-speed { top: 22%; right: 10%; animation: resumeBadgeFloat2 9s ease-in-out infinite alternate; color: #38BDF8; }
+.badge-dataset { bottom: 12%; left: 8%; animation: resumeBadgeFloat3 10s ease-in-out infinite alternate; color: #A855F7; }
+.badge-architect { bottom: 16%; right: 10%; animation: resumeBadgeFloat4 7s ease-in-out infinite alternate; color: #10B981; }
 @keyframes resumeBadgeFloat1 { 0% { transform: translate(0, 0); } 100% { transform: translate(16px, -12px); } }
 @keyframes resumeBadgeFloat2 { 0% { transform: translate(0, 0); } 100% { transform: translate(-14px, 16px); } }
 @keyframes resumeBadgeFloat3 { 0% { transform: translate(0, 0); } 100% { transform: translate(18px, 12px); } }
 @keyframes resumeBadgeFloat4 { 0% { transform: translate(0, 0); } 100% { transform: translate(-16px, -14px); } }
-/* Top Navbar */
-.zenith-nav-bar {
-background: rgba(11, 17, 30, 0.78);
-backdrop-filter: blur(20px);
--webkit-backdrop-filter: blur(20px);
-border: 1px solid rgba(255, 255, 255, 0.08);
-border-radius: 16px;
-padding: 10px 22px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 12px;
-box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
-}
-.zenith-brand-group {
-display: flex;
-align-items: center;
-gap: 12px;
-}
-.zenith-brand-logo {
-width: 38px;
-height: 38px;
-border-radius: 10px;
-background: linear-gradient(135deg, #1D4ED8, #3B82F6);
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 20px;
-box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
-}
-.zenith-brand-title {
-font-size: 1.5rem;
-font-weight: 800;
-color: #FFFFFF;
-letter-spacing: -0.02em;
-}
-.zenith-version-badge {
-background: rgba(59, 130, 246, 0.15);
-border: 1px solid rgba(59, 130, 246, 0.35);
-color: #60A5FA;
-font-size: 0.72rem;
-font-weight: 700;
-padding: 3px 9px;
-border-radius: 20px;
-letter-spacing: 0.05em;
-text-transform: uppercase;
-}
-.status-pill-green {
-background: rgba(16, 185, 129, 0.12);
-border: 1px solid rgba(16, 185, 129, 0.35);
-color: #10B981;
-padding: 6px 14px;
-border-radius: 30px;
-font-size: 0.8rem;
-font-weight: 600;
-display: inline-flex;
-align-items: center;
-gap: 8px;
-}
-.btn-enter-terminal {
-background: linear-gradient(135deg, #2563EB, #1D4ED8);
-color: white;
-font-size: 0.85rem;
-font-weight: 700;
-padding: 7px 16px;
-border-radius: 8px;
-border: none;
-box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
-display: inline-flex;
-align-items: center;
-gap: 6px;
-}
-/* Ticker Ribbon */
-.zenith-ticker-bar {
-display: flex;
-align-items: center;
-gap: 8px;
-margin-bottom: 20px;
-overflow-x: auto;
-padding-bottom: 4px;
-}
-.ticker-head-label {
-color: #64748B;
-font-size: 0.74rem;
-font-weight: 700;
-letter-spacing: 0.08em;
-text-transform: uppercase;
-white-space: nowrap;
-margin-right: 6px;
-}
-.ticker-chip {
-background: rgba(14, 21, 37, 0.8);
-border: 1px solid rgba(255, 255, 255, 0.1);
-border-radius: 30px;
-padding: 5px 14px;
-font-size: 0.78rem;
-white-space: nowrap;
-display: inline-flex;
-align-items: center;
-gap: 6px;
-color: #E2E8F0;
-}
-.ticker-chip.active-blue {
-border-color: rgba(59, 130, 246, 0.7);
-background: rgba(37, 99, 235, 0.18);
-}
-/* Unified Glassmorphic Card on 2nd Column */
-div[data-testid="column"]:nth-of-type(2), [data-testid="stHorizontalBlock"] > div:nth-child(2) {
-background: rgba(13, 20, 36, 0.90) !important;
-backdrop-filter: blur(32px) !important;
--webkit-backdrop-filter: blur(32px) !important;
+/* 4. COMPACT CARD CONTAINER (FITS 100% IN VIEWPORT) */
+div[data-testid="stVerticalBlockBorderWrapper"] {
+background: rgba(13, 20, 36, 0.92) !important;
+backdrop-filter: blur(28px) !important;
+-webkit-backdrop-filter: blur(28px) !important;
 border: 1px solid rgba(59, 130, 246, 0.35) !important;
-border-radius: 22px !important;
-padding: 30px 28px !important;
-box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85), 0 0 50px rgba(37, 99, 235, 0.22) !important;
+border-radius: 20px !important;
+padding: 22px 24px !important;
+box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85), 0 0 45px rgba(37, 99, 235, 0.22) !important;
+width: 100% !important;
+max-width: 410px !important;
+margin: 0 auto !important;
 }
 [data-testid="stForm"] {
 border: none !important;
 padding: 0 !important;
 background: transparent !important;
 }
-.terminal-icon-badge {
-width: 58px;
-height: 58px;
-border-radius: 16px;
+.compact-icon-badge {
+width: 44px;
+height: 44px;
+border-radius: 12px;
 background: linear-gradient(135deg, #1D4ED8, #3B82F6);
 display: flex;
 align-items: center;
 justify-content: center;
-font-size: 26px;
-margin: 0 auto 12px auto;
-box-shadow: 0 8px 24px rgba(37, 99, 235, 0.55);
+font-size: 20px;
+margin: 0 auto 6px auto;
+box-shadow: 0 6px 18px rgba(37, 99, 235, 0.5);
 }
-.terminal-title {
-font-size: 2.1rem;
+.compact-title {
+font-size: 1.45rem;
 font-weight: 800;
 color: #FFFFFF;
 text-align: center;
-margin: 0 0 6px 0;
+margin: 0 0 2px 0;
 letter-spacing: -0.02em;
+line-height: 1.2;
 }
-.terminal-sub {
+.compact-sub {
 color: #94A3B8;
-font-size: 0.88rem;
-text-align: center;
-margin-bottom: 20px;
-}
-.zenith-footer-bar {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 14px 8px;
-color: #64748B;
 font-size: 0.8rem;
-margin-top: 32px;
-border-top: 1px solid rgba(255, 255, 255, 0.06);
-position: relative;
-z-index: 2;
+text-align: center;
+margin-bottom: 12px;
+}
+.compact-hint {
+text-align: center;
+color: #64748B;
+font-size: 0.72rem;
+margin-top: 10px;
+}
+.compact-hint code {
+color: #38BDF8;
+background: rgba(56, 189, 248, 0.1);
+padding: 2px 5px;
+border-radius: 4px;
+font-size: 0.72rem;
 }
 </style>""", unsafe_allow_html=True)
 
@@ -296,7 +198,6 @@ z-index: 2;
 <div class="float-resume-badge badge-nlp-speed">⚡ NLP Parser • 0.09s Sub-Second</div>
 <div class="float-resume-badge badge-dataset">📊 2,484 Kaggle Resumes • 24 Domains</div>
 <div class="float-resume-badge badge-architect">📄 Amandeep Verma • AI Architect • 99.8%</div>
-<div class="float-resume-badge badge-sdg10">⚖️ 100% Unbiased Merit Ranking • SDG 10</div>
 <div class="chart-scroll-track">
 <svg viewBox="0 0 3200 600" width="3200" height="600" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 3200px; height: 100vh;">
 <defs>
@@ -313,92 +214,58 @@ z-index: 2;
 </div>
 </div>""", unsafe_allow_html=True)
 
-    st.markdown("""<div class="zenith-nav-bar">
-<div class="zenith-brand-group">
-<div class="zenith-brand-logo">🎯</div>
-<div class="zenith-brand-title">Elythra</div>
-<div class="zenith-version-badge">AI SCREENER PRO v2.4</div>
-</div>
-<div style="display: flex; align-items: center; gap: 14px;">
-<span class="status-pill-green">● NLP Engine Online (14ms)</span>
-<span style="color: #94A3B8; font-size: 0.82rem; font-weight: 600; cursor: pointer;">⚡ Bennett Capstone M1</span>
-<span class="btn-enter-terminal">Enter Command Center 🎯</span>
-</div>
-</div>""", unsafe_allow_html=True)
-
-    st.markdown("""<div class="zenith-ticker-bar">
-<span class="ticker-head-label">LIVE TALENT INTELLIGENCE STREAM:</span>
-<div class="ticker-chip active-blue">🎯 PARSING ACCURACY <span style="color: #10B981; font-weight: 700;">99.4%</span> • Kaggle Benchmark</div>
-<div class="ticker-chip">⚡ INFERENCE SPEED <span style="color: #38BDF8; font-weight: 700;">0.09s</span> • Sub-Second</div>
-<div class="ticker-chip">🚀 INGESTION RATE <span style="color: #10B981; font-weight: 700;">620 / MIN</span> • Batch Mode</div>
-<div class="ticker-chip">📊 BENCHMARK DATASET <span style="color: #FFFFFF; font-weight: 700;">2,484 RESUMES</span> • 24 Domains</div>
-<div class="ticker-chip">⚖️ UNBIASED MERIT <span style="color: #A855F7; font-weight: 700;">100% MERIT</span> • SDG 10</div>
-<div class="ticker-chip">📄 FORMATS: PDF • DOCX • TXT</div>
-<div class="ticker-chip">🔍 SKILL TAXONOMY: 411+ VERIFIED SKILLS</div>
-</div>""", unsafe_allow_html=True)
-
-    col_l, col_center, col_r = st.columns([1, 1.25, 1])
-    with col_center:
-        st.markdown("""<div class="terminal-icon-badge">🎯</div>
-<h1 class="terminal-title">Recruiter Command Center</h1>
-<p class="terminal-sub">Enterprise AI Resume Screening & Candidate Ranking System • Production v2.4</p>""", unsafe_allow_html=True)
+    with st.container(border=True):
+        st.markdown("""<div class="compact-icon-badge">🎯</div>
+<h1 class="compact-title">Recruiter Portal</h1>
+<p class="compact-sub">AI Resume Screening & Ranking System</p>""", unsafe_allow_html=True)
 
         auth_tab_login, auth_tab_register = st.tabs(["🔑 Sign In", "📝 Register"])
 
         with auth_tab_login:
-            if st.button("⚡ One-Click Recruiter Demo Access (Amandeep Verma)", use_container_width=True, key="demo_access_btn"):
+            if st.button("⚡ 1-Click Instant Demo (Amandeep Verma)", use_container_width=True, key="compact_demo_btn"):
                 st.session_state.authenticated = True
                 st.session_state.user_info = DEFAULT_USERS["demo@edufyi.com"]
-                st.success("🎉 Access Granted! Entering Screening Command Center...")
+                st.success("🎉 Welcome! Entering Command Center...")
                 st.rerun()
 
-            with st.form("terminal_login_form", clear_on_submit=False):
-                user_id = st.text_input("📧 Recruiter Work Email Address", value="amandeepverma3001@gmail.com", placeholder="recruiter@company.com")
-                login_password = st.text_input("🔒 Password", value="demo123", type="password", placeholder="••••••••••••")
+            with st.form("compact_login_form", clear_on_submit=False):
+                user_email = st.text_input("📧 Work Email", value="amandeepverma3001@gmail.com", placeholder="recruiter@company.com")
+                user_pass = st.text_input("🔒 Password", value="demo123", type="password", placeholder="••••••••")
                 keep_logged = st.checkbox("Keep active recruiter session open", value=True)
-                submit_login = st.form_submit_button("🚀 Enter Screening Command Center →", use_container_width=True, type="primary")
+                submit_login = st.form_submit_button("🚀 Enter Command Center →", use_container_width=True, type="primary")
 
                 if submit_login:
                     st.session_state.authenticated = True
                     st.session_state.user_info = {
                         "name": "Amandeep Verma",
-                        "email": user_id if "@" in user_id else "amandeepverma3001@gmail.com",
+                        "email": user_email if "@" in user_email else "amandeepverma3001@gmail.com",
                         "org": "Bennett University",
                         "role": "Lead Architect"
                     }
-                    st.success("🎉 Authentication successful! Loading Command Center...")
+                    st.success("🎉 Access Granted! Loading...")
                     st.rerun()
 
-            with st.expander("ℹ️ View Evaluator / Demo Credentials"):
-                st.markdown("""
-                * **Lead Recruiter**: `amandeepverma3001@gmail.com` | Password: `demo123`
-                * **Demo Recruiter**: `demo@edufyi.com` | Password: `demo123`
-                * **Evaluation Lead**: `evaluator@mentor.com` | Password: `mentor123`
-                """)
+            st.markdown("""<div class="compact-hint">
+Demo Account: <code>amandeepverma3001@gmail.com</code> | Pass: <code>demo123</code>
+</div>""", unsafe_allow_html=True)
 
         with auth_tab_register:
-            with st.form("terminal_register_form", clear_on_submit=True):
+            with st.form("compact_register_form", clear_on_submit=True):
                 reg_name = st.text_input("Full Name", placeholder="e.g. Rahul Sharma")
-                reg_email = st.text_input("Work Email Address", placeholder="e.g. rahul@techcorp.com")
-                reg_org = st.text_input("Organization / Institute", placeholder="e.g. Bennett University")
-                reg_password = st.text_input("Choose Password", type="password", placeholder="Min 4 characters")
-                submit_register = st.form_submit_button("✨ Create Recruiter Account →", use_container_width=True, type="primary")
+                reg_email = st.text_input("Work Email", placeholder="e.g. rahul@techcorp.com")
+                reg_password = st.text_input("Password", type="password", placeholder="Min 4 chars")
+                submit_reg = st.form_submit_button("✨ Create Account →", use_container_width=True, type="primary")
 
-                if submit_register:
+                if submit_reg:
                     registered_users = st.session_state.get("registered_users", {})
-                    success, new_user, msg = register_new_user(reg_name, reg_email, reg_org, reg_password, registered_users)
+                    success, new_user, msg = register_new_user(reg_name, reg_email, "Bennett University", reg_password, registered_users)
                     if success:
                         if "registered_users" not in st.session_state:
                             st.session_state.registered_users = {}
                         st.session_state.registered_users[new_user["email"]] = new_user
                         st.session_state.authenticated = True
                         st.session_state.user_info = new_user
-                        st.success(f"🎉 {msg} Entering Command Center...")
+                        st.success(f"🎉 {msg} Entering...")
                         st.rerun()
                     else:
                         st.error(msg)
-
-    st.markdown("""<div class="zenith-footer-bar">
-<div>© 2026 Elythra AI • Autonomous Talent Intelligence & Candidate Ranking OS.</div>
-<div><span style="color: #38BDF8; font-weight: 700;">2,484+ Resumes Ingested</span> &nbsp;•&nbsp; <span style="color: #10B981; font-weight: 700;">0.09s Latency</span> &nbsp;•&nbsp; <span>Amandeep Verma • Bennett University</span></div>
-</div>""", unsafe_allow_html=True)
