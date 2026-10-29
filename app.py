@@ -341,6 +341,63 @@ st.markdown("""
     div[data-baseweb="radio"] div[aria-checked="true"] > div {
         background-color: #FF4B4B !important;
     }
+
+    /* =========================================================================
+       Spacious File Uploader Box for Candidate Resumes (Height Expansion)
+       ========================================================================= */
+    [data-testid="stFileUploader"] {
+        width: 100% !important;
+    }
+
+    /* Expand the dropzone container height */
+    [data-testid="stFileUploaderDropzone"],
+    div[data-testid="stFileUploadDropzone"],
+    [data-testid="stFileUploader"] section {
+        min-height: 280px !important;
+        max-height: 440px !important;
+        height: auto !important;
+        overflow-y: auto !important;
+        padding: 16px 18px !important;
+        border: 1.5px dashed rgba(99, 102, 241, 0.45) !important;
+        border-radius: 14px !important;
+        background: rgba(15, 23, 42, 0.65) !important;
+        transition: all 0.25s ease-in-out !important;
+    }
+
+    [data-testid="stFileUploaderDropzone"]:hover,
+    div[data-testid="stFileUploadDropzone"]:hover {
+        border-color: #6366F1 !important;
+        background: rgba(30, 41, 59, 0.8) !important;
+    }
+
+    /* Container for the uploaded files pills/chips */
+    [data-testid="stFileUploader"] ul,
+    ul[data-testid="stFileUploaderFiles"],
+    [data-testid="stFileUploaderDropzone"] > div {
+        max-height: 380px !important;
+        overflow-y: auto !important;
+    }
+
+    /* Custom sleek scrollbar for file uploader */
+    [data-testid="stFileUploaderDropzone"]::-webkit-scrollbar,
+    [data-testid="stFileUploader"] ul::-webkit-scrollbar,
+    [data-testid="stFileUploaderDropzone"] > div::-webkit-scrollbar {
+        width: 6px !important;
+        height: 6px !important;
+    }
+
+    [data-testid="stFileUploaderDropzone"]::-webkit-scrollbar-track,
+    [data-testid="stFileUploader"] ul::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.6) !important;
+        border-radius: 8px !important;
+    }
+
+    [data-testid="stFileUploaderDropzone"]::-webkit-scrollbar-thumb,
+    [data-testid="stFileUploader"] ul::-webkit-scrollbar-thumb,
+    [data-testid="stFileUploaderDropzone"] > div::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #6366F1, #8B5CF6) !important;
+        border-radius: 8px !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
