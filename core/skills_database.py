@@ -55,6 +55,77 @@ SKILL_CATEGORIES = {
         "react native", "flutter", "ios development", "android development", "swiftui",
         "figma", "adobe xd", "ui/ux design", "responsive design"
     ],
+    "Finance & Accounting": [
+        "accounting", "auditing", "taxation", "tally", "quickbooks", "financial analysis",
+        "balance sheet", "general ledger", "accounts payable", "accounts receivable",
+        "bank reconciliation", "gst", "income tax", "financial reporting", "payroll",
+        "budgeting", "ifrs", "gaap", "cost accounting", "corporate finance", "sap fico"
+    ],
+    "Legal & Advocacy": [
+        "litigation", "legal research", "contract drafting", "corporate law", "compliance",
+        "dispute resolution", "arbitration", "intellectual property", "due diligence",
+        "legal advice", "client advocacy", "court appearances", "brief writing", "legal documentation"
+    ],
+    "Healthcare & Nursing": [
+        "patient care", "nursing", "vital signs", "clinical documentation", "medication administration",
+        "cpr", "bls", "icu care", "first aid", "health assessment", "patient safety",
+        "phlebotomy", "infection control", "clinical diagnosis", "emergency care"
+    ],
+    "Human Resources (HR)": [
+        "recruitment", "talent acquisition", "employee engagement", "hr policies", "onboarding",
+        "performance management", "screening interviews", "human resources", "labor law",
+        "talent management", "retention strategies", "payroll processing", "posh compliance"
+    ],
+    "Sales & Business Development": [
+        "b2b sales", "lead generation", "sales prospecting", "client acquisition",
+        "key account management", "negotiation", "sales pipeline", "cold calling",
+        "market research", "revenue growth", "closing deals", "crm management", "salesforce"
+    ],
+    "Marketing, Digital Media & PR": [
+        "digital marketing", "seo", "sem", "social media marketing", "content creation",
+        "copywriting", "public relations", "press releases", "media relations", "brand management",
+        "crisis communications", "google analytics", "email marketing", "content strategy"
+    ],
+    "Education & Teaching": [
+        "classroom management", "lesson planning", "curriculum development", "pedagogy",
+        "student assessment", "instructional design", "educational technology", "special education",
+        "tutoring", "academic advising", "course design", "student engagement"
+    ],
+    "Culinary & Hospitality": [
+        "culinary arts", "food preparation", "menu planning", "kitchen management", "food safety",
+        "haccp", "baking", "pastry", "fine dining", "recipe development", "food plating",
+        "inventory control", "cost control", "beverage management"
+    ],
+    "Civil, Construction & Architecture": [
+        "site supervision", "construction management", "civil engineering", "autocad",
+        "structural analysis", "project estimation", "concrete technology", "safety standards",
+        "blueprint reading", "contractor management", "building codes", "revit"
+    ],
+    "Aviation & Automobile": [
+        "automotive engineering", "vehicle diagnostics", "cad/cam", "mechanical design",
+        "engine testing", "avionics", "aircraft maintenance", "aerodynamics", "flight safety",
+        "propulsion systems", "quality inspection", "catia", "solidworks"
+    ],
+    "Agriculture & Environment": [
+        "agronomy", "crop management", "soil science", "irrigation", "pest control",
+        "fertilizer management", "farm operations", "sustainable agriculture", "horticulture",
+        "harvesting", "agricultural research", "plant breeding"
+    ],
+    "BPO & Customer Operations": [
+        "customer service", "inbound calls", "outbound calls", "crm", "ticket resolution",
+        "telecalling", "escalation handling", "call center operations", "active listening",
+        "client communication", "quality assurance", "zendesk"
+    ],
+    "Fitness & Wellness": [
+        "personal training", "fitness coaching", "strength training", "weight loss",
+        "nutrition planning", "exercise physiology", "kinesiology", "group fitness",
+        "workout programming", "rehabilitation", "cardio training"
+    ],
+    "Banking & Financial Services": [
+        "retail banking", "loan processing", "credit analysis", "risk management",
+        "wealth management", "kyc compliance", "anti-money laundering", "portfolio management",
+        "commercial banking", "investment banking"
+    ],
     "Methodologies & Soft Skills": [
         "agile", "scrum", "kanban", "jira", "git", "github", "gitlab", "bitbucket",
         "leadership", "team management", "communication", "problem solving",

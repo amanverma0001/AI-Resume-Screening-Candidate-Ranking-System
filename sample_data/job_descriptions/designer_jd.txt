@@ -1,0 +1,14 @@
+Job Title: Senior UI/UX & Graphic Designer
+Department: Product Design
+Location: Hybrid
+Required Experience: 3 to 5 years
+Minimum Education: Bachelor in Design (B.Des), Human-Computer Interaction, or Graphic Arts
+
+Job Overview:
+Seeking a creative UI/UX Designer to craft intuitive web and mobile application experiences, design system components, and marketing graphics.
+
+Key Responsibilities & Required Skills:
+- UI/UX Design: Wireframing, user journey mapping, high-fidelity prototyping, and design systems in Figma.
+- Visual & Graphic Design: Branding, vector illustrations, typography, and marketing assets in Adobe Photoshop and Illustrator.
+- User Research: Usability testing, user feedback analysis, and responsive design optimization.
+- Collaboration: Working with frontend engineering teams, design handoff, and iterative sprints.

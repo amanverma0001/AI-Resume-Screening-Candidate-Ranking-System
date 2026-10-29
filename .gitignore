@@ -17,3 +17,8 @@ Thumbs.db
 scratch/
 .system_generated/
 .vercel
+
+# Archives
+archive*
+*.zip
+

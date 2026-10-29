@@ -368,9 +368,32 @@ SAMPLE_JD_DIR = os.path.join(BASE_DIR, "sample_data", "job_descriptions")
 SAMPLE_RESUME_DIR = os.path.join(BASE_DIR, "sample_data", "resumes")
 
 PRELOADED_JDS = {
-    "Senior Python Backend Developer (4+ Yrs)": "senior_python_backend_jd.txt",
-    "Data Scientist & AI / ML Engineer (3+ Yrs)": "data_scientist_ai_engineer_jd.txt",
-    "English Teacher & Literature Educator (3+ Yrs)": "english_teacher_jd.txt"
+    "💻 INFORMATION-TECHNOLOGY — Senior Software Engineer": "information_technology_jd.txt",
+    "🤖 Data Scientist & AI / ML Engineer (Tech Demo)": "data_scientist_ai_engineer_jd.txt",
+    "🐍 Senior Python Backend Developer (Tech Demo)": "senior_python_backend_jd.txt",
+    "💼 ACCOUNTANT — Senior Financial Auditor": "accountant_jd.txt",
+    "⚖️ ADVOCATE — Corporate Legal Counsel": "advocate_jd.txt",
+    "🌾 AGRICULTURE — Agronomist & Crop Specialist": "agriculture_jd.txt",
+    "👗 APPAREL — Fashion Designer & Merchandiser": "apparel_jd.txt",
+    "🎨 ARTS — Creative Director & Visual Artist": "arts_jd.txt",
+    "🚗 AUTOMOBILE — Automotive Systems Engineer": "automobile_jd.txt",
+    "✈️ AVIATION — Aircraft Maintenance Engineer": "aviation_jd.txt",
+    "🏦 BANKING — Operations & Credit Manager": "banking_jd.txt",
+    "🎧 BPO — Customer Support Team Lead": "bpo_jd.txt",
+    "📈 BUSINESS-DEVELOPMENT — B2B Sales Manager": "business_development_jd.txt",
+    "👨‍🍳 CHEF — Executive Head Culinary Specialist": "chef_jd.txt",
+    "🏗️ CONSTRUCTION — Civil & Site Engineer": "construction_jd.txt",
+    "👔 CONSULTANT — Management & Strategy Advisor": "consultant_jd.txt",
+    "🖌️ DESIGNER — UI/UX & Graphic Designer": "designer_jd.txt",
+    "📱 DIGITAL-MEDIA — Growth Marketing & SEO Specialist": "digital_media_jd.txt",
+    "⚙️ ENGINEERING — Systems Mechanical Engineer": "engineering_jd.txt",
+    "💰 FINANCE — Corporate Financial Planning Analyst": "finance_jd.txt",
+    "🏋️ FITNESS — Personal Trainer & Wellness Coach": "fitness_jd.txt",
+    "🏥 HEALTHCARE — Clinical Nurse & Care Specialist": "healthcare_jd.txt",
+    "👥 HR — Talent Acquisition Specialist": "hr_jd.txt",
+    "📢 PUBLIC-RELATIONS — PR & Communications Manager": "public_relations_jd.txt",
+    "🎯 SALES — Senior Sales Account Executive": "sales_jd.txt",
+    "📚 TEACHER — High School / College Educator": "teacher_jd.txt"
 }
 
 # --- Sidebar Controls ---
@@ -480,9 +503,31 @@ else: # Upload Custom Files
     col_upload_jd, col_upload_res = st.columns(2)
     with col_upload_jd:
         st.subheader("1. Job Description")
-        jd_input_method = st.radio("Input JD As:", ["Paste Text", "Upload File (PDF / DOCX / TXT)"], horizontal=True)
-        if jd_input_method == "Paste Text":
-            jd_text = st.text_area("Paste Job Description here:", height=200, placeholder="Paste requirements, skills, experience needed...")
+        jd_input_method = st.radio(
+            "Input JD As:", 
+            ["⚡ Pre-loaded Role Template", "📝 Paste Text", "📄 Upload File (PDF / DOCX / TXT)"], 
+            horizontal=True
+        )
+        if jd_input_method == "⚡ Pre-loaded Role Template":
+            chosen_role = st.selectbox(
+                "Select a Pre-set Role Template:", 
+                list(PRELOADED_JDS.keys()),
+                help="Pick a ready-made job description without manual typing"
+            )
+            jd_filename = PRELOADED_JDS[chosen_role]
+            jd_filepath = os.path.join(SAMPLE_JD_DIR, jd_filename)
+            default_jd = ""
+            if os.path.exists(jd_filepath):
+                default_jd = parse_txt(jd_filepath)
+            
+            jd_text = st.text_area(
+                "Job Description Content (Auto-filled, editable):",
+                value=default_jd,
+                height=220,
+                help="You can use this pre-filled JD directly or modify it as needed."
+            )
+        elif jd_input_method == "📝 Paste Text":
+            jd_text = st.text_area("Paste Job Description here:", height=220, placeholder="Paste requirements, skills, experience needed...")
         else:
             uploaded_jd = st.file_uploader("Upload Job Description", type=["pdf", "docx", "txt"])
             if uploaded_jd:

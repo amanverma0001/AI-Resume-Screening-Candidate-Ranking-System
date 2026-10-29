@@ -1,0 +1,14 @@
+Job Title: Senior Software Engineer & IT Systems Lead
+Department: Information Technology
+Location: Tech Center / Remote
+Required Experience: 3 to 6 years
+Minimum Education: B.Tech / B.E in CSE / IT, or MCA
+
+Job Overview:
+Seeking an experienced Software Engineer to develop scalable applications, maintain database systems, and orchestrate cloud infrastructure.
+
+Key Responsibilities & Required Skills:
+- Programming: Proficiency in Python, Java, or JavaScript/TypeScript.
+- Web & Backend: Designing REST APIs, microservices, and database systems (PostgreSQL, MySQL, MongoDB).
+- Cloud & DevOps: Working with Docker, Linux, Git, and cloud services (AWS or Azure).
+- System Architecture: Object-oriented programming, data structures, and code review best practices.
