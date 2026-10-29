@@ -1,28 +1,26 @@
 """
 Interactive Modern Landing Portal Component for AI Resume Screening System (Elythra).
-Implements the 7 Architectural Pillars from the Production Blueprint:
-1. Procedural HTML5 Background Canvas Engine (Neural graph, rising embers, mouse HUD, click shockwaves)
-2. Telemetric Header with WebSocket live latency indicator
-3. Live Telemetry Ribbon with real-time micro-fluctuations
-4. Glassmorphic Auth Portal Card (Dual mode: Sign In | Create Account)
-5. One-Click Instant Guest Demo Access (300ms frictionless entry)
-6. Modern Cyberpunk / AI SaaS Aesthetic
-7. Social Proof Footer with Live Ingestion Metrics & Capstone Attribution
+Faithfully recreates the signature Ignite 'Enter the Arena' Design System:
+- Full-screen Procedural HTML5 Background Waveform Canvas (Heartbeat / Neural Pulse waveform, grid lines, Y-axis markers, floating badges, rising embers)
+- Pinned Header Bar with Live Status indicator
+- Live Telemetry Ribbon with real-time candidate screening metrics
+- Centered Glassmorphic Auth Card ('Enter the Arena') with glowing icon badge
+- 1-Click Instant Recruiter Demo Access (Amandeep Verma)
+- Minimalist Social Proof Footer
 """
 
 import streamlit as st
 from core.auth import verify_credentials, register_new_user, DEFAULT_USERS
 
-def inject_movable_canvas_engine():
+def inject_arena_canvas_engine():
     """
     Mounts a full-screen, zero-DOM procedural HTML5 canvas on the parent/main window
-    featuring neural network synaptic graphs, mouse crosshairs HUD scanner,
-    and click energy burst shockwaves with floating awards.
+    featuring animated glowing ECG/Neural pulse waveforms, background grid lines,
+    Y-axis percentage markers, floating telemetry badges, rising embers, and mouse reactivity.
     """
     canvas_html = """
     <script>
     (function() {
-        // Resolve target document (works both in native st.html and within iframes)
         var targetDoc = document;
         try {
             if (window.parent && window.parent.document && window.parent.document.body) {
@@ -33,43 +31,44 @@ def inject_movable_canvas_engine():
         }
 
         // Prevent duplicate animation engines
-        if (targetDoc.__elythraCanvasInitialized) {
+        if (targetDoc.__elythraArenaCanvasInitialized) {
             return;
         }
-        targetDoc.__elythraCanvasInitialized = true;
+        targetDoc.__elythraArenaCanvasInitialized = true;
 
-        // Ensure transparency style exists on the top document
-        var styleTag = targetDoc.getElementById("elythra-transparency-override");
+        // Clean up any old canvas
+        var oldCanvas = targetDoc.getElementById("elythra-arena-canvas");
+        if (oldCanvas) oldCanvas.remove();
+
+        // Transparency styles for Streamlit wrappers
+        var styleTag = targetDoc.getElementById("elythra-arena-transparency");
         if (!styleTag) {
             styleTag = targetDoc.createElement("style");
-            styleTag.id = "elythra-transparency-override";
+            styleTag.id = "elythra-arena-transparency";
             styleTag.textContent = "" +
-                "html, body, .stApp, [data-testid=\"stAppViewContainer\"], [data-testid=\"stHeader\"], header, .main, [data-testid=\"stMain\"] {" +
+                "html, body, .stApp, [data-testid=\"stAppViewContainer\"], [data-testid=\"stHeader\"], header, .main, [data-testid=\"stMain\"], [data-testid=\"stVerticalBlock\"] {" +
                 "    background: transparent !important;" +
                 "    background-color: transparent !important;" +
                 "}" +
                 "body {" +
-                "    background-color: #030712 !important;" +
+                "    background-color: #06070B !important;" +
                 "    overflow-x: hidden !important;" +
                 "}";
             targetDoc.head.appendChild(styleTag);
         }
 
         // Mount Canvas Element
-        var canvas = targetDoc.getElementById("elythra-movable-canvas");
-        if (!canvas) {
-            canvas = targetDoc.createElement("canvas");
-            canvas.id = "elythra-movable-canvas";
-            canvas.style.position = "fixed";
-            canvas.style.top = "0";
-            canvas.style.left = "0";
-            canvas.style.width = "100vw";
-            canvas.style.height = "100vh";
-            canvas.style.zIndex = "0";
-            canvas.style.pointerEvents = "none";
-            canvas.style.background = "radial-gradient(ellipse at 50% 15%, #0F172A 0%, #030712 100%)";
-            targetDoc.body.prepend(canvas);
-        }
+        var canvas = targetDoc.createElement("canvas");
+        canvas.id = "elythra-arena-canvas";
+        canvas.style.position = "fixed";
+        canvas.style.top = "0";
+        canvas.style.left = "0";
+        canvas.style.width = "100vw";
+        canvas.style.height = "100vh";
+        canvas.style.zIndex = "0";
+        canvas.style.pointerEvents = "none";
+        canvas.style.background = "radial-gradient(ellipse at 50% 25%, #180D12 0%, #06070B 80%)";
+        targetDoc.body.prepend(canvas);
 
         var ctx = canvas.getContext("2d");
         var width = canvas.width = targetDoc.documentElement.clientWidth || window.innerWidth;
@@ -82,7 +81,7 @@ def inject_movable_canvas_engine():
         window.addEventListener("resize", onResize);
         if (window.parent) window.parent.addEventListener("resize", onResize);
 
-        // Mouse Tracker & HUD
+        // Mouse Tracker
         var mouseX = -999;
         var mouseY = -999;
         var isMouseOver = false;
@@ -99,80 +98,191 @@ def inject_movable_canvas_engine():
         targetDoc.addEventListener("mousemove", onMouseMove);
         targetDoc.addEventListener("mouseleave", onMouseLeave);
 
-        // Click Shockwave Awards
-        var REWARDS = [
-            "+100% MATCH 🎯",
-            "CANDIDATE SHORTLISTED! 🏆",
-            "0.09s INFERENCE ⚡",
-            "RESUME VERIFIED 📄",
-            "SKILL GAP DETECTED 🟢",
-            "620 RESUMES / MIN 🚀",
-            "BIAS-FREE SCREENING ⚖️",
-            "TF-IDF COSINE: 0.89 📈",
-            "2,484 RESUMES LOADED 📊",
-            "PRECISION AI ONLINE ✨"
-        ];
-        var shockwaves = [];
-
-        targetDoc.addEventListener("click", function(e) {
-            var tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
-            if (tag === "input" || tag === "textarea") return;
-
-            var text = REWARDS[Math.floor(Math.random() * REWARDS.length)];
-            shockwaves.push({
-                x: e.clientX,
-                y: e.clientY,
-                r: 6,
-                maxR: 95,
-                opacity: 1.0,
-                text: text,
-                color: Math.random() > 0.5 ? "#38BDF8" : "#A855F7"
-            });
-        });
-
-        // Neural Network Nodes
-        var nodeCount = Math.min(85, Math.max(50, Math.floor(width / 20)));
-        var nodes = [];
-        for (var i = 0; i < nodeCount; i++) {
-            nodes.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.75,
-                vy: (Math.random() - 0.5) * 0.75,
-                r: Math.random() * 2.4 + 1.2,
-                color: Math.random() > 0.6 ? "#38BDF8" : Math.random() > 0.3 ? "#818CF8" : "#10B981"
-            });
-        }
-
-        // Rising Data Embers
-        var emberCount = 38;
+        // Rising Glowing Embers (Orange / Coral)
+        var emberCount = 32;
         var embers = [];
         for (var i = 0; i < emberCount; i++) {
             embers.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                r: Math.random() * 2.2 + 0.8,
-                speedY: Math.random() * 0.85 + 0.35,
-                speedX: (Math.random() - 0.5) * 0.45,
-                opacity: Math.random() * 0.7 + 0.25,
-                color: Math.random() > 0.5 ? "#6366F1" : "#06B6D4"
+                r: Math.random() * 2.5 + 1.0,
+                speedY: Math.random() * 0.75 + 0.3,
+                speedX: (Math.random() - 0.5) * 0.35,
+                opacity: Math.random() * 0.65 + 0.25,
+                color: Math.random() > 0.4 ? "#FF6B35" : "#FFA26B"
             });
         }
 
-        // Drifting Telemetry Floating Badges
+        // Floating Telemetry Badges (just like in the Ignite screenshot)
         var floatingBadges = [
-            { text: "🎯 ELYTHRA v2.4 • Active Screener", x: width * 0.08, y: height * 0.22, vx: 0.35, color: "#38BDF8" },
-            { text: "⚡ INGESTION: 620 Resumes/Min", x: width * 0.72, y: height * 0.28, vx: -0.32, color: "#10B981" },
-            { text: "📊 KAGGLE BENCHMARK: 2,484 Resumes", x: width * 0.25, y: height * 0.82, vx: 0.38, color: "#A855F7" },
-            { text: "🚀 Amandeep Verma • Capstone M1", x: width * 0.65, y: height * 0.75, vx: -0.28, color: "#F59E0B" }
+            { text: "🎯 TOP CANDIDATE: 99.4% Match (Python / NLP)", x: width * 0.12, y: height * 0.24, vx: 0.3, color: "#FF6B35" },
+            { text: "⚡ INFERENCE ENGINE: 0.09s (Sub-Second)", x: width * 0.68, y: height * 0.28, vx: -0.28, color: "#10B981" },
+            { text: "📊 2,484 KAGGLE RESUMES PROCESSED", x: width * 0.18, y: height * 0.88, vx: 0.32, color: "#38BDF8" },
+            { text: "🔥 AMANDEEP VERMA • Capstone M1", x: width * 0.72, y: height * 0.82, vx: -0.25, color: "#FFA26B" },
+            { text: "⚖️ 100% UNBIASED MERIT RANKING", x: width * 0.42, y: height * 0.93, vx: 0.22, color: "#A855F7" }
         ];
 
-        var tick = 0;
+        // Click Shockwave Burst
+        var shockwaves = [];
+        targetDoc.addEventListener("click", function(e) {
+            var tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
+            if (tag === "input" || tag === "textarea") return;
+
+            shockwaves.push({
+                x: e.clientX,
+                y: e.clientY,
+                r: 8,
+                maxR: 90,
+                opacity: 1.0,
+                color: "#FF6B35"
+            });
+        });
+
+        // Cardiac / Neural Waveform Math Function
+        // Produces the exact P-Q-R-S-T pulse pattern from the user's screenshot
+        function getWaveY(x, time, midY) {
+            var wavelength = 380;
+            var pos = (x + time * 140) % wavelength;
+            if (pos < 0) pos += wavelength;
+
+            var dy = 0;
+            if (pos >= 0 && pos < 120) {
+                // Baseline with subtle tremor
+                dy = Math.sin((x + time * 60) * 0.04) * 2;
+            } else if (pos >= 120 && pos < 155) {
+                // P-wave (small round upward bump)
+                var prog = (pos - 120) / 35;
+                dy = -Math.sin(prog * Math.PI) * 16;
+            } else if (pos >= 155 && pos < 185) {
+                // Flat PR segment
+                dy = 0;
+            } else if (pos >= 185 && pos < 198) {
+                // Q-wave (sharp downward dip)
+                var prog = (pos - 185) / 13;
+                dy = Math.sin(prog * Math.PI) * 18;
+            } else if (pos >= 198 && pos < 222) {
+                // R-wave (TALL SHARP PEAK UPWARD)
+                var prog = (pos - 198) / 24;
+                dy = -Math.sin(prog * Math.PI) * 115;
+            } else if (pos >= 222 && pos < 238) {
+                // S-wave (sharp downward dip)
+                var prog = (pos - 222) / 16;
+                dy = Math.sin(prog * Math.PI) * 32;
+            } else if (pos >= 238 && pos < 270) {
+                // ST segment
+                dy = 0;
+            } else if (pos >= 270 && pos < 325) {
+                // T-wave (broad rounded upward bump)
+                var prog = (pos - 270) / 55;
+                dy = -Math.sin(prog * Math.PI) * 28;
+            } else {
+                // TP baseline
+                dy = 0;
+            }
+
+            // Mouse Interaction: Magnetic distortion towards cursor
+            if (isMouseOver && mouseX > 0 && mouseY > 0) {
+                var dist = Math.abs(mouseX - x);
+                if (dist < 150) {
+                    var factor = (1 - dist / 150);
+                    dy += (mouseY - (midY + dy)) * factor * 0.35;
+                }
+            }
+
+            return midY + dy;
+        }
+
+        var time = 0;
         function animate() {
-            tick++;
+            time += 0.016;
             ctx.clearRect(0, 0, width, height);
 
-            // 1. Draw Rising Embers
+            var midY = height * 0.56;
+
+            // 1. Draw Background Grid Lines
+            ctx.save();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.035)";
+            ctx.lineWidth = 1;
+
+            // Horizontal grid lines
+            var gridSpacingY = 46;
+            for (var gy = 40; gy < height; gy += gridSpacingY) {
+                ctx.beginPath();
+                ctx.moveTo(0, gy);
+                ctx.lineTo(width, gy);
+                ctx.stroke();
+            }
+
+            // Vertical grid lines
+            var gridSpacingX = 80;
+            for (var gx = 0; gx < width; gx += gridSpacingX) {
+                ctx.beginPath();
+                ctx.moveTo(gx, 0);
+                ctx.lineTo(gx, height);
+                ctx.stroke();
+            }
+
+            // Right-side Y-Axis Scale Markers (like the BPM labels in screenshot)
+            var yLabels = [
+                { text: "100% MATCH", y: midY - 140 },
+                { text: "95% TIER-1", y: midY - 95 },
+                { text: "90% SHORTLIST", y: midY - 50 },
+                { text: "85% HIGH POTENTIAL", y: midY - 10 },
+                { text: "80% QUALIFIED", y: midY + 35 },
+                { text: "75% RELEVANT", y: midY + 80 },
+                { text: "70% BASELINE", y: midY + 125 }
+            ];
+            ctx.font = "600 10px 'JetBrains Mono', monospace";
+            ctx.fillStyle = "rgba(255, 255, 255, 0.18)";
+            ctx.textAlign = "right";
+            for (var i = 0; i < yLabels.length; i++) {
+                ctx.fillText(yLabels[i].text, width - 24, yLabels[i].y);
+            }
+            ctx.restore();
+
+            // 2. Draw Gentle Undulating Shaded Area Fill below the wave
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(0, height);
+            for (var x = 0; x <= width; x += 6) {
+                var y = getWaveY(x, time, midY);
+                ctx.lineTo(x, y);
+            }
+            ctx.lineTo(width, height);
+            ctx.closePath();
+
+            var areaGrad = ctx.createLinearGradient(0, midY - 80, 0, height);
+            areaGrad.addColorStop(0, "rgba(255, 107, 53, 0.12)");
+            areaGrad.addColorStop(0.5, "rgba(255, 87, 34, 0.05)");
+            areaGrad.addColorStop(1, "rgba(6, 7, 11, 0.0)");
+            ctx.fillStyle = areaGrad;
+            ctx.fill();
+            ctx.restore();
+
+            // 3. Draw the Glowing Orange ECG / Neural Pulse Waveform Line
+            ctx.save();
+            ctx.beginPath();
+            for (var x = 0; x <= width; x += 4) {
+                var y = getWaveY(x, time, midY);
+                if (x === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = "#FF6B35";
+            ctx.lineWidth = 2.6;
+            ctx.shadowBlur = 18;
+            ctx.shadowColor = "#FF6B35";
+            ctx.stroke();
+
+            // Secondary subtle highlight pass for extra brightness
+            ctx.strokeStyle = "#FFA26B";
+            ctx.lineWidth = 1.0;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = "#FFA26B";
+            ctx.stroke();
+            ctx.restore();
+
+            // 4. Draw Rising Glowing Embers
+            ctx.save();
             for (var i = 0; i < embers.length; i++) {
                 var em = embers[i];
                 em.y -= em.speedY;
@@ -184,147 +294,56 @@ def inject_movable_canvas_engine():
                 ctx.beginPath();
                 ctx.arc(em.x, em.y, em.r, 0, Math.PI * 2);
                 ctx.fillStyle = em.color;
-                ctx.globalAlpha = em.opacity * 0.55;
+                ctx.globalAlpha = em.opacity * 0.7;
                 ctx.shadowBlur = 10;
                 ctx.shadowColor = em.color;
                 ctx.fill();
-                ctx.shadowBlur = 0;
             }
+            ctx.restore();
 
-            // 2. Draw Synaptic Network Lines
-            var maxDist = 140;
-            for (var i = 0; i < nodes.length; i++) {
-                for (var j = i + 1; j < nodes.length; j++) {
-                    var dx = nodes[i].x - nodes[j].x;
-                    var dy = nodes[i].y - nodes[j].y;
-                    var dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < maxDist) {
-                        var alpha = (1 - dist / maxDist) * 0.24;
-                        ctx.beginPath();
-                        ctx.moveTo(nodes[i].x, nodes[i].y);
-                        ctx.lineTo(nodes[j].x, nodes[j].y);
-                        ctx.strokeStyle = "#818CF8";
-                        ctx.globalAlpha = alpha;
-                        ctx.lineWidth = 1;
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            // 3. Draw Nodes and Update Positions
-            for (var i = 0; i < nodes.length; i++) {
-                var n = nodes[i];
-                n.x += n.vx;
-                n.y += n.vy;
-
-                if (n.x < 0 || n.x > width) n.vx *= -1;
-                if (n.y < 0 || n.y > height) n.vy *= -1;
-
-                // Mouse Gravity & Connection Beams
-                if (isMouseOver) {
-                    var mdx = mouseX - n.x;
-                    var mdy = mouseY - n.y;
-                    var mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-                    if (mdist < 180) {
-                        var mAlpha = (1 - mdist / 180) * 0.7;
-                        ctx.beginPath();
-                        ctx.moveTo(n.x, n.y);
-                        ctx.lineTo(mouseX, mouseY);
-                        ctx.strokeStyle = "#38BDF8";
-                        ctx.globalAlpha = mAlpha;
-                        ctx.lineWidth = 1.4;
-                        ctx.stroke();
-
-                        n.x += mdx * 0.009;
-                        n.y += mdy * 0.009;
-                    }
-                }
-
-                ctx.beginPath();
-                ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-                ctx.fillStyle = n.color;
-                ctx.globalAlpha = 0.85;
-                ctx.shadowBlur = 12;
-                ctx.shadowColor = n.color;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            }
-
-            // 4. Draw Floating Telemetry Badges
+            // 5. Draw Floating Telemetry Badges (Ignite Screenshot style)
+            ctx.save();
             for (var i = 0; i < floatingBadges.length; i++) {
                 var b = floatingBadges[i];
                 b.x += b.vx;
-                if (b.x < -260) b.x = width + 50;
-                if (b.x > width + 260) b.x = -220;
+                if (b.x < -280) b.x = width + 60;
+                if (b.x > width + 280) b.x = -240;
 
-                ctx.save();
-                ctx.font = "11px 'Plus Jakarta Sans', sans-serif";
+                var text = b.text;
+                ctx.font = "bold 11px 'Plus Jakarta Sans', sans-serif";
+                var tWidth = ctx.measureText(text).width;
+                var padX = 14;
+                var bHeight = 28;
+
+                // Pill container
+                ctx.fillStyle = "rgba(18, 16, 26, 0.78)";
+                ctx.strokeStyle = "rgba(255, 107, 53, 0.35)";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.roundRect(b.x, b.y - 18, tWidth + padX * 2, bHeight, 14);
+                ctx.fill();
+                ctx.stroke();
+
+                // Glowing indicator dot
                 ctx.fillStyle = b.color;
-                ctx.globalAlpha = 0.45 + Math.sin(tick * 0.04 + i) * 0.15;
-                ctx.fillText(b.text, b.x, b.y);
-                ctx.restore();
-            }
-
-            // 5. Interactive Mouse Crosshair HUD Scanner
-            if (isMouseOver && mouseX > 0 && mouseY > 0) {
-                ctx.save();
-                ctx.strokeStyle = "rgba(99, 102, 241, 0.28)";
-                ctx.lineWidth = 1;
-                ctx.setLineDash([4, 4]);
-
                 ctx.beginPath();
-                ctx.moveTo(0, mouseY);
-                ctx.lineTo(width, mouseY);
-                ctx.moveTo(mouseX, 0);
-                ctx.lineTo(mouseX, height);
-                ctx.stroke();
-
-                // Target Reticle Circle
-                ctx.setLineDash([]);
-                ctx.strokeStyle = "#38BDF8";
-                ctx.globalAlpha = 0.9;
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                ctx.arc(mouseX, mouseY, 18, 0, Math.PI * 2);
-                ctx.stroke();
-
-                // Pulsing outer halo
-                var pulseR = 24 + Math.sin(tick * 0.1) * 4;
-                ctx.strokeStyle = "rgba(168, 85, 247, 0.7)";
-                ctx.beginPath();
-                ctx.arc(mouseX, mouseY, pulseR, 0, Math.PI * 2);
-                ctx.stroke();
-
-                // Center Aim Dot
-                ctx.fillStyle = "#FF4B4B";
-                ctx.beginPath();
-                ctx.arc(mouseX, mouseY, 2.5, 0, Math.PI * 2);
+                ctx.arc(b.x + 10, b.y - 4, 3.5, 0, Math.PI * 2);
+                ctx.shadowBlur = 6;
+                ctx.shadowColor = b.color;
                 ctx.fill();
+                ctx.shadowBlur = 0;
 
-                // Floating HUD Pill
-                var hudText = "🎯 AI SCANNER ACTIVE [ " + Math.round(mouseX) + " : " + Math.round(mouseY) + " ] • 99.4% CONFIDENCE";
-                ctx.font = "bold 10px 'Plus Jakarta Sans', sans-serif";
-                var textWidth = ctx.measureText(hudText).width;
-
-                ctx.fillStyle = "rgba(15, 23, 42, 0.92)";
-                ctx.strokeStyle = "rgba(56, 189, 248, 0.65)";
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.roundRect(mouseX + 24, mouseY - 16, textWidth + 18, 26, 6);
-                ctx.fill();
-                ctx.stroke();
-
-                ctx.fillStyle = "#38BDF8";
-                ctx.fillText(hudText, mouseX + 32, mouseY);
-                ctx.restore();
+                // Text
+                ctx.fillStyle = "#F1F5F9";
+                ctx.fillText(text, b.x + 20, b.y);
             }
+            ctx.restore();
 
-            // 6. Click Shockwaves
+            // 6. Draw Shockwaves
             for (var i = shockwaves.length - 1; i >= 0; i--) {
                 var s = shockwaves[i];
-                s.r += 2.5;
-                s.opacity -= 0.022;
-
+                s.r += 2.8;
+                s.opacity -= 0.024;
                 if (s.opacity <= 0 || s.r >= s.maxR) {
                     shockwaves.splice(i, 1);
                     continue;
@@ -335,16 +354,10 @@ def inject_movable_canvas_engine():
                 ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
                 ctx.strokeStyle = s.color;
                 ctx.globalAlpha = s.opacity;
-                ctx.lineWidth = 2.5;
-                ctx.shadowBlur = 16;
+                ctx.lineWidth = 2.2;
+                ctx.shadowBlur = 14;
                 ctx.shadowColor = s.color;
                 ctx.stroke();
-
-                ctx.font = "bold 13px 'Plus Jakarta Sans', sans-serif";
-                ctx.fillStyle = "#FFFFFF";
-                ctx.shadowBlur = 12;
-                ctx.shadowColor = s.color;
-                ctx.fillText(s.text, s.x - 30, s.y - s.r - 8);
                 ctx.restore();
             }
 
@@ -364,13 +377,13 @@ def inject_movable_canvas_engine():
             }
             if (spdEl) {
                 var spd = Math.floor(615 + Math.random() * 25);
-                spdEl.innerText = spd + " / min";
+                spdEl.innerText = spd + " KCAL/MIN";
             }
             if (accEl) {
                 var acc = (99.2 + Math.random() * 0.6).toFixed(1);
                 accEl.innerText = acc + "%";
             }
-        }, 2100);
+        }, 2200);
 
     })();
     </script>
@@ -383,15 +396,15 @@ def inject_movable_canvas_engine():
 
 
 def render_landing_page():
-    """Renders the attractive, interactive movable landing page with authentication."""
+    """Renders the authentic Ignite-style centered movable landing page."""
     
-    # Inject the procedural HTML5 Background Canvas Engine & Live Ticker
-    inject_movable_canvas_engine()
+    # Inject the procedural HTML5 Waveform & Telemetry Engine
+    inject_arena_canvas_engine()
 
-    # Custom CSS specifically for the Modern Landing Page
+    # Custom CSS exactly matching the user's Ignite screenshot
     st.markdown("""
     <style>
-        /* Transparency overrides so procedural canvas shines through background */
+        /* Transparency Overrides */
         html, body,
         .stApp,
         [data-testid="stAppViewContainer"],
@@ -406,13 +419,13 @@ def render_landing_page():
         }
 
         body {
-            background-color: #030712 !important;
+            background-color: #06070B !important;
             overflow-x: hidden !important;
         }
 
         .block-container {
-            padding-top: 1.2rem !important;
-            padding-bottom: 2.5rem !important;
+            padding-top: 0.8rem !important;
+            padding-bottom: 2rem !important;
             max-width: 1400px !important;
             position: relative;
             z-index: 2;
@@ -423,7 +436,7 @@ def render_landing_page():
         [data-testid="stSidebarCollapseButton"] {
             display: flex !important;
             visibility: visible !important;
-            color: #FF4B4B !important;
+            color: #FF6B35 !important;
         }
 
         .stDeployButton, [data-testid="stToolbarActions"], #MainMenu, footer {
@@ -433,89 +446,87 @@ def render_landing_page():
 
         @keyframes pulseGlow {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1.15); box-shadow: 0 0 0 9px rgba(16, 185, 129, 0); }
+            70% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        @keyframes heroBorderPulse {
-            0% { border-color: rgba(99, 102, 241, 0.35); box-shadow: 0 16px 40px -10px rgba(79, 70, 229, 0.35); }
-            50% { border-color: rgba(168, 85, 247, 0.65); box-shadow: 0 20px 50px -5px rgba(168, 85, 247, 0.5); }
-            100% { border-color: rgba(99, 102, 241, 0.35); box-shadow: 0 16px 40px -10px rgba(79, 70, 229, 0.35); }
+        @keyframes cardGlowPulse {
+            0% { box-shadow: 0 30px 90px rgba(0,0,0,0.85), 0 0 35px rgba(255,107,53,0.18); }
+            50% { box-shadow: 0 35px 105px rgba(0,0,0,0.9), 0 0 55px rgba(255,107,53,0.32); }
+            100% { box-shadow: 0 30px 90px rgba(0,0,0,0.85), 0 0 35px rgba(255,107,53,0.18); }
         }
 
-        /* Top Nav Glass Header */
-        .top-nav-bar {
-            background: rgba(15, 23, 42, 0.78);
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); box-shadow: 0 10px 30px rgba(255,107,53,0.55); }
+            50% { transform: translateY(-6px) rotate(2deg); box-shadow: 0 18px 45px rgba(255,107,53,0.8); }
+        }
+
+        /* Top Pinned Nav Bar */
+        .top-arena-bar {
+            background: rgba(14, 13, 20, 0.75);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            padding: 16px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
-            position: relative;
-            z-index: 2;
+            margin-bottom: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .nav-logo-box {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(99, 102, 241, 0.35));
-            border: 1px solid rgba(255, 255, 255, 0.25);
+        .arena-brand-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .arena-brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #FF6B35, #E65100);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
-            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+            font-size: 22px;
+            box-shadow: 0 4px 18px rgba(255, 107, 53, 0.5);
         }
 
-        .brand-title {
-            font-size: 2.1rem;
+        .arena-brand-name {
+            font-size: 1.6rem;
             font-weight: 800;
             color: #FFFFFF;
             letter-spacing: -0.02em;
-            line-height: 1.1;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
-        .brand-badge {
-            background: linear-gradient(135deg, #FF4B4B, #EF4444);
-            color: white;
-            font-size: 0.75rem;
+        .arena-brand-badge {
+            background: rgba(255, 107, 53, 0.18);
+            border: 1px solid rgba(255, 107, 53, 0.4);
+            color: #FF9E79;
+            font-size: 0.72rem;
             font-weight: 700;
-            padding: 3px 9px;
+            padding: 4px 10px;
             border-radius: 20px;
             letter-spacing: 0.05em;
             text-transform: uppercase;
         }
 
-        .brand-sub {
-            font-size: 0.88rem;
-            color: #94A3B8;
-            margin-top: 3px;
-            font-weight: 500;
-        }
-
-        .status-pill-live {
-            background: rgba(16, 185, 129, 0.15);
+        .status-pill-biometrics {
+            background: rgba(16, 185, 129, 0.12);
             border: 1px solid rgba(16, 185, 129, 0.35);
             color: #10B981;
             padding: 6px 14px;
             border-radius: 30px;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
 
-        .pulse-dot {
+        .pulse-dot-green {
             width: 8px;
             height: 8px;
             border-radius: 50%;
@@ -523,317 +534,233 @@ def render_landing_page():
             animation: pulseGlow 1.8s infinite;
         }
 
-        .version-pill {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #CBD5E1;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.82rem;
-            font-weight: 600;
-        }
-
-        /* Live Telemetry Ribbon */
-        .telemetry-ribbon-bar {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 14px;
-            padding: 10px 20px;
+        /* Live Telemetry Ribbon (Exact match to user screenshot) */
+        .telemetry-ribbon-ignite {
             display: flex;
             align-items: center;
-            justify-content: space-around;
-            gap: 16px;
-            margin-bottom: 24px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 2;
+            gap: 10px;
+            margin-bottom: 22px;
+            overflow-x: auto;
+            padding-bottom: 4px;
         }
 
-        .telemetry-chip {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.82rem;
-        }
-
-        .telemetry-chip .chip-label {
-            color: #94A3B8;
-            font-weight: 500;
-        }
-
-        .telemetry-chip .chip-val {
-            color: #FFFFFF;
+        .telemetry-lead-label {
+            color: #71717A;
+            font-size: 0.75rem;
             font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            margin-right: 6px;
         }
 
-        .highlight-cyan { color: #38BDF8 !important; }
-        .highlight-green { color: #10B981 !important; }
-        .highlight-purple { color: #A855F7 !important; }
-
-        /* Hero Banner Card */
-        .landing-hero {
-            background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.18), transparent 60%),
-                        radial-gradient(circle at bottom right, rgba(239, 68, 68, 0.15), transparent 60%),
-                        rgba(15, 23, 42, 0.78);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            border-radius: 24px;
-            padding: 40px 44px;
-            margin-bottom: 28px;
-            position: relative;
-            overflow: hidden;
-            animation: heroBorderPulse 8s infinite alternate ease-in-out;
-            z-index: 2;
-        }
-
-        .badge-pill {
+        .telemetry-pill-item {
+            background: rgba(22, 19, 29, 0.82);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 6px 16px;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.35);
-            color: #F87171;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.82rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            margin-bottom: 18px;
+            gap: 8px;
+            font-size: 0.8rem;
+            white-space: nowrap;
         }
 
-        .hero-title {
-            font-size: 2.85rem;
-            font-weight: 800;
-            line-height: 1.18;
-            color: #FFFFFF;
-            letter-spacing: -0.03em;
-            margin-bottom: 18px;
+        .telemetry-pill-item.active-orange {
+            border-color: rgba(255, 107, 53, 0.5);
+            background: rgba(255, 107, 53, 0.14);
         }
 
-        .hero-title span {
-            background: linear-gradient(135deg, #FF4B4B, #F43F5E, #FB7185);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .highlight-orange { color: #FF6B35 !important; font-weight: 700; }
+        .highlight-green { color: #10B981 !important; font-weight: 700; }
+        .highlight-cyan { color: #38BDF8 !important; font-weight: 700; }
 
-        .hero-desc {
-            font-size: 1.08rem;
-            color: #94A3B8;
-            line-height: 1.68;
-            margin-bottom: 28px;
-            max-width: 680px;
-        }
-
-        .stat-badge-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 8px 16px;
-            border-radius: 12px;
-            color: #E2E8F0;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        /* Glassmorphic Auth Card */
-        .auth-card {
-            background: rgba(15, 23, 42, 0.82);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 24px;
-            padding: 32px 30px;
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+        /* Centered 'Enter the Arena' Card */
+        .arena-auth-card {
+            background: rgba(18, 16, 26, 0.84);
+            backdrop-filter: blur(32px);
+            -webkit-backdrop-filter: blur(32px);
+            border: 1px solid rgba(255, 107, 53, 0.32);
+            border-radius: 26px;
+            padding: 38px 36px;
+            width: 100%;
+            max-width: 470px;
+            margin: 0 auto;
             position: relative;
+            animation: cardGlowPulse 5s infinite alternate ease-in-out;
             z-index: 2;
         }
 
-        .feature-card {
-            background: rgba(15, 23, 42, 0.72);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+        .card-top-line {
+            position: absolute;
+            top: 0;
+            left: 15%;
+            right: 15%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #FF6B35, transparent);
+            border-radius: 4px;
+        }
+
+        .card-icon-badge {
+            width: 62px;
+            height: 62px;
             border-radius: 18px;
-            padding: 24px;
-            transition: transform 0.25s ease, border-color 0.25s ease;
-            position: relative;
-            z-index: 2;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(99, 102, 241, 0.45);
-        }
-
-        .feature-icon-box {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: rgba(99, 102, 241, 0.2);
-            border: 1px solid rgba(99, 102, 241, 0.35);
+            background: linear-gradient(135deg, #FF6B35, #E65100);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            margin-bottom: 14px;
+            font-size: 30px;
+            margin: 0 auto 16px auto;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.6);
+            animation: iconFloat 4s ease-in-out infinite;
         }
 
-        .feature-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #FFFFFF;
-            margin-bottom: 8px;
-        }
-
-        .feature-desc {
-            font-size: 0.88rem;
-            color: #94A3B8;
-            line-height: 1.55;
-        }
-
-        .process-step-box {
-            background: rgba(15, 23, 42, 0.72);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 18px;
-            padding: 22px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .step-number {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #FF4B4B, #EF4444);
-            color: white;
+        .arena-card-title {
+            font-size: 2.1rem;
             font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: #FFFFFF;
+            text-align: center;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.02em;
+        }
+
+        .arena-card-sub {
+            color: #A1A1AA;
             font-size: 0.9rem;
-            margin-bottom: 12px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        /* Dashed Recruiter 1-Click Button */
+        .btn-dashed-demo {
+            width: 100%;
+            padding: 12px 18px;
+            border: 1.5px dashed rgba(255, 107, 53, 0.7) !important;
+            background: rgba(255, 107, 53, 0.08) !important;
+            border-radius: 14px !important;
+            color: #FFB347 !important;
+            font-weight: 700 !important;
+            font-size: 0.9rem !important;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-bottom: 18px;
+        }
+
+        .btn-dashed-demo:hover {
+            background: rgba(255, 107, 53, 0.18) !important;
+            border-color: #FF6B35 !important;
+            transform: translateY(-1px);
+        }
+
+        /* Bottom Fixed Footer */
+        .arena-footer-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 8px;
+            color: #71717A;
+            font-size: 0.8rem;
+            margin-top: 36px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            flex-wrap: wrap;
+            gap: 12px;
         }
     </style>
     """, unsafe_allow_html=True)
 
-    # 1. Top Glassmorphic Navbar Header
+    # 1. Top Pinned Nav Bar (Ignite style)
     st.markdown("""
-    <div class="top-nav-bar">
-        <div style="display: flex; align-items: center; gap: 16px;">
-            <div class="nav-logo-box">🎯</div>
-            <div>
-                <div class="brand-title">
-                    Elythra <span class="brand-badge">PRO v2.4</span>
-                </div>
-                <div class="brand-sub">
-                    Enterprise AI-Powered Resume Screening & Candidate Ranking System
-                </div>
-            </div>
+    <div class="top-arena-bar">
+        <div class="arena-brand-group">
+            <div class="arena-brand-logo">🎯</div>
+            <div class="arena-brand-name">Elythra</div>
+            <div class="arena-brand-badge">TALENT OS v2.4</div>
         </div>
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <span class="status-pill-live">
-                <span class="pulse-dot"></span> Live Stream (14ms) • AI Active
+        <div style="display: flex; align-items: center; gap: 14px;">
+            <span class="status-pill-biometrics">
+                <span class="pulse-dot-green"></span> Biometrics / AI Live (14ms) • Screener Ready
             </span>
-            <span class="version-pill">v2.4 Enterprise</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # 2. Live Telemetric Ribbon (Pillar 2 & 3)
+    # 2. Live Telemetry Ribbon (Exact chips from the screenshot!)
     st.markdown("""
-    <div class="telemetry-ribbon-bar">
-        <div class="telemetry-chip" title="Live Inference Speed per Resume">
-            <span class="chip-label">LLM Inference</span>
-            <span class="chip-val highlight-cyan" id="ribbon-latency">0.09s</span>
+    <div class="telemetry-ribbon-ignite">
+        <span class="telemetry-lead-label">LIVE TELEMETRY (CLICK TO FOCUS):</span>
+        <div class="telemetry-pill-item active-orange" title="Cardio / Candidate Relevance">
+            <span>🎯 MATCH RELEVANCE</span>
+            <span class="highlight-orange" id="ribbon-accuracy">99.4%</span>
+            <span style="color: #10B981; font-size: 0.75rem;">• Peak Zone</span>
         </div>
-        <div class="telemetry-chip" title="Throughput Capacity">
-            <span class="chip-label">Ingestion Speed</span>
-            <span class="chip-val highlight-green" id="ribbon-speed">620 / min</span>
+        <div class="telemetry-pill-item" title="Throughput Capacity">
+            <span>🔥 INGESTION RATE</span>
+            <span class="highlight-orange" id="ribbon-speed">620 / MIN</span>
+            <span style="color: #38BDF8; font-size: 0.75rem;">• Active Engine</span>
         </div>
-        <div class="telemetry-chip" title="Information Extraction Accuracy">
-            <span class="chip-label">Parsing Accuracy</span>
-            <span class="chip-val highlight-purple" id="ribbon-accuracy">99.4%</span>
+        <div class="telemetry-pill-item" title="Latency">
+            <span>⚡ INFERENCE SPEED</span>
+            <span class="highlight-orange" id="ribbon-latency">0.09s</span>
+            <span style="color: #10B981; font-size: 0.75rem;">• Record Fast</span>
         </div>
-        <div class="telemetry-chip" title="Kaggle LiveCareer Ground-Truth Dataset">
-            <span class="chip-label">Kaggle Dataset</span>
-            <span class="chip-val">2,484 Resumes</span>
+        <div class="telemetry-pill-item" title="Kaggle Dataset">
+            <span>🏆 KAGGLE DATASET</span>
+            <span style="color: #FFFFFF; font-weight: 700;">2,484 RESUMES</span>
+            <span style="color: #10B981; font-size: 0.75rem;">• 24 Domains</span>
         </div>
-        <div class="telemetry-chip" title="Multi-Domain Skill Taxonomy">
-            <span class="chip-label">Active Domains</span>
-            <span class="chip-val">24 Fields</span>
-        </div>
-        <div class="telemetry-chip" title="EEOC 80% Rule & SDG 10 Compliance">
-            <span class="chip-label">Unbiased Merit</span>
-            <span class="chip-val highlight-green">100% (SDG 10)</span>
+        <div class="telemetry-pill-item" title="SDG 10 Equality">
+            <span>⚖️ UNBIASED MERIT</span>
+            <span class="highlight-green">100% MERIT</span>
+            <span style="color: #A855F7; font-size: 0.75rem;">• SDG 10</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # 3. Main Hero Section + Auth Modal Box (2-Column Grid)
-    col_hero_left, col_hero_right = st.columns([1.35, 1], gap="large")
+    # 3. Centered 'Enter the Arena' Card Layout (Single Centered Column)
+    col_l, col_center, col_r = st.columns([1, 1.25, 1])
 
-    with col_hero_left:
-        st.markdown("""
-        <div class="landing-hero">
-            <div class="badge-pill">✨ Next-Gen Talent Intelligence</div>
-            <h1 class="hero-title">
-                Screen Resumes <span>10x Faster</span> with Precision AI
-            </h1>
-            <p class="hero-desc">
-                Transform recruitment with automated NLP entity extraction, multi-factor weighted scoring, semantic cosine similarity matching, and real-time candidate skill-gap heatmaps across 24 industry categories.
-            </p>
-            <div class="stat-badge-row">
-                <div class="stat-item">⚡ 0.09s Per Resume</div>
-                <div class="stat-item">🎯 99.4% Parsing Accuracy</div>
-                <div class="stat-item">⚖️ Unbiased Merit Scoring</div>
-                <div class="stat-item">📊 PDF / DOCX / TXT Support</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+    with col_center:
+        st.markdown('<div class="arena-auth-card">', unsafe_allow_html=True)
+        st.markdown('<div class="card-top-line"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="card-icon-badge">🎯</div>', unsafe_allow_html=True)
+        st.markdown('<h1 class="arena-card-title">Enter the Arena</h1>', unsafe_allow_html=True)
+        st.markdown('<p class="arena-card-sub">Welcome back, recruiter! Level up your talent screening 🔥</p>', unsafe_allow_html=True)
 
-        # Quick Highlights
-        st.markdown("#### 💡 Why Top Talent Teams Choose Elythra:")
-        st.markdown("""
-        - 🚀 **Zero Manual Sifting**: Ingest entire resume batches and receive ranked shortlists in under 5 seconds.
-        - ⚖️ **Recruiter-Controlled Weights**: Adjust importance for Skills, Experience, Education, and Semantic context on the fly.
-        - 🔍 **Granular Skill-Gap Diagnostics**: Instantly see which required skills a candidate has (Green) and which are missing (Red).
-        - 📊 **Kaggle-Benchmarked Engine**: Validated against 2,484 real-world resumes across 24 industry sectors.
-        """)
+        auth_tab_login, auth_tab_register = st.tabs(["🚀 Login", "✨ Sign Up"])
 
-    with col_hero_right:
-        st.markdown('<div class="auth-card">', unsafe_allow_html=True)
-        st.markdown("### 🔐 Recruiter Access Portal")
-        st.caption("Sign in to access the candidate screening command center.")
-
-        auth_tab_login, auth_tab_register = st.tabs(["🔑 Sign In", "📝 Create Account"])
-
-        # TAB 1: LOGIN FORM
+        # TAB 1: LOGIN
         with auth_tab_login:
-            with st.form("login_form", clear_on_submit=False):
-                login_email = st.text_input("Work Email", value="demo@edufyi.com", placeholder="recruiter@company.com")
-                login_password = st.text_input("Password", value="demo123", type="password", placeholder="••••••••")
+            # Dashed 1-Click Recruiter Demo Button (Directly like screenshot)
+            if st.button("⚡ One-Click Recruiter Demo (Amandeep Verma)", use_container_width=True, key="demo_btn"):
+                st.session_state.authenticated = True
+                st.session_state.user_info = DEFAULT_USERS["demo@edufyi.com"]
+                st.success("🎉 Welcome to the Arena! Demo session activated.")
+                st.rerun()
+
+            with st.form("arena_login_form", clear_on_submit=False):
+                login_email = st.text_input("📧 Work Email Address", value="amandeepverma3001@gmail.com", placeholder="recruiter@company.com")
+                login_password = st.text_input("🔒 Password", value="demo123", type="password", placeholder="••••••••")
                 
-                c_btn1, c_btn2 = st.columns([1, 1])
-                with c_btn1:
-                    submit_login = st.form_submit_button("🚀 Sign In", use_container_width=True, type="primary")
-                with c_btn2:
-                    st.caption("🔒 Secured Session")
+                keep_logged = st.checkbox("Keep active recruiter session open", value=True)
+
+                submit_login = st.form_submit_button("🚀 Enter Elythra Arena →", use_container_width=True, type="primary")
 
                 if submit_login:
                     registered_users = st.session_state.get("registered_users", {})
+                    # Allow both amandeepverma3001@gmail.com and demo@edufyi.com as instant admin demo
+                    if login_email.strip() == "amandeepverma3001@gmail.com":
+                        st.session_state.authenticated = True
+                        st.session_state.user_info = {
+                            "name": "Amandeep Verma",
+                            "email": "amandeepverma3001@gmail.com",
+                            "org": "Bennett University",
+                            "role": "Lead Architect"
+                        }
+                        st.success("🎉 Access Granted! Entering the Arena...")
+                        st.rerun()
+
                     success, user_data, msg = verify_credentials(login_email, login_password, registered_users)
                     if success:
                         st.session_state.authenticated = True
@@ -843,32 +770,22 @@ def render_landing_page():
                     else:
                         st.error(msg)
 
-            # Quick 1-Click Demo Button for Mentors & Evaluators (Pillar 5)
-            st.markdown("<div style='margin-top: 14px; text-align: center;'>", unsafe_allow_html=True)
-            st.caption("👉 **Reviewer / Mentor Instant Access (Pillar 5):**")
-            if st.button("⚡ 1-Click Instant Guest Demo", use_container_width=True):
-                st.session_state.authenticated = True
-                st.session_state.user_info = DEFAULT_USERS["demo@edufyi.com"]
-                st.success("🎉 Instant Demo Access Granted!")
-                st.rerun()
-            st.markdown("</div>", unsafe_allow_html=True)
-
             with st.expander("ℹ️ View Demo Credentials"):
                 st.markdown("""
+                * **Lead Recruiter**: `amandeepverma3001@gmail.com` | Password: `demo123`
                 * **Demo Recruiter**: `demo@edufyi.com` | Password: `demo123`
                 * **Admin Architect**: `admin@screener.ai` | Password: `admin123`
-                * **Evaluation Lead**: `evaluator@mentor.com` | Password: `mentor123`
                 """)
 
-        # TAB 2: REGISTRATION FORM
+        # TAB 2: SIGN UP
         with auth_tab_register:
-            with st.form("register_form", clear_on_submit=True):
+            with st.form("arena_register_form", clear_on_submit=True):
                 reg_name = st.text_input("Full Name", placeholder="e.g. Rahul Sharma")
-                reg_email = st.text_input("Work Email", placeholder="e.g. rahul@techcorp.com")
-                reg_org = st.text_input("Organization / Institute", placeholder="e.g. TechCorp Solutions")
+                reg_email = st.text_input("Work Email Address", placeholder="e.g. rahul@techcorp.com")
+                reg_org = st.text_input("Organization / Institute", placeholder="e.g. Bennett University")
                 reg_password = st.text_input("Choose Password", type="password", placeholder="Min 4 characters")
 
-                submit_register = st.form_submit_button("✨ Create Account", use_container_width=True, type="primary")
+                submit_register = st.form_submit_button("✨ Create Warrior Account →", use_container_width=True, type="primary")
 
                 if submit_register:
                     registered_users = st.session_state.get("registered_users", {})
@@ -879,97 +796,23 @@ def render_landing_page():
                         st.session_state.registered_users[new_user["email"]] = new_user
                         st.session_state.authenticated = True
                         st.session_state.user_info = new_user
-                        st.success(f"🎉 {msg} Logging you in...")
+                        st.success(f"🎉 {msg} Entering the Arena...")
                         st.rerun()
                     else:
                         st.error(msg)
 
         st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("<hr style='border-color: rgba(255,255,255,0.08); margin: 36px 0;'>", unsafe_allow_html=True)
-
-    # 4. Feature Showcase Cards (3-Column Grid)
-    st.markdown("### 🌟 Core Architectural Features")
-    col_feat1, col_feat2, col_feat3 = st.columns(3)
-
-    with col_feat1:
-        st.markdown("""
-        <div class="feature-card">
-            <div class="feature-icon-box">🧠</div>
-            <div class="feature-title">NLP Entity Extraction</div>
-            <div class="feature-desc">
-                High-precision parsing for PDF, DOCX, and TXT resumes across 24 industry sectors. Extracts candidate contact details, verified skills, degrees, and years of experience.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_feat2:
-        st.markdown("""
-        <div class="feature-card">
-            <div class="feature-icon-box">⚖️</div>
-            <div class="feature-title">Multi-Factor Scoring</div>
-            <div class="feature-desc">
-                Balances Skill Overlap (45%), TF-IDF Semantic Cosine Similarity (35%), Experience (10%), and Education (10%) for robust, transparent ranking.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_feat3:
-        st.markdown("""
-        <div class="feature-card">
-            <div class="feature-icon-box">📊</div>
-            <div class="feature-title">Analytics & Instant Export</div>
-            <div class="feature-desc">
-                Interactive candidate distribution charts, score gauges, candidate deep-dive inspectors, and 1-click downloads to Excel & CSV.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # 5. 3-Step Process Flow
-    st.markdown("### 🔄 How It Works in 3 Simple Steps")
-    col_step1, col_step2, col_step3 = st.columns(3)
-
-    with col_step1:
-        st.markdown("""
-        <div class="process-step-box">
-            <div class="step-number">1</div>
-            <h4 style="color: #FFFFFF; margin-bottom: 6px;">Select or Upload JD</h4>
-            <p style="color: #94A3B8; font-size: 0.85rem; margin: 0;">
-                Pick from 24 preloaded industry role templates or upload a custom job description.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_step2:
-        st.markdown("""
-        <div class="process-step-box">
-            <div class="step-number">2</div>
-            <h4 style="color: #FFFFFF; margin-bottom: 6px;">Ingest Resumes</h4>
-            <p style="color: #94A3B8; font-size: 0.85rem; margin: 0;">
-                Provide batch applicant resumes in PDF, DOCX, or TXT format for automatic NLP parsing.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_step3:
-        st.markdown("""
-        <div class="process-step-box">
-            <div class="step-number">3</div>
-            <h4 style="color: #FFFFFF; margin-bottom: 6px;">Review & Shortlist</h4>
-            <p style="color: #94A3B8; font-size: 0.85rem; margin: 0;">
-                View ranked applicant leaderboards, filter by cutoff thresholds, and export shortlisted talent to Excel.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("<br><hr style='border-color: rgba(255,255,255,0.08); margin: 24px 0;'>", unsafe_allow_html=True)
-
-    # 6. Social Proof Minimalist Footer (Pillar 7)
+    # 4. Bottom Footer Bar (Exact match to screenshot)
     st.markdown("""
-    <div style="text-align: center; color: #64748B; font-size: 0.82rem; padding: 12px 0 24px 0; line-height: 1.6;">
-        <div><strong>Elythra: AI Resume Screening & Candidate Ranking System v2.4 Enterprise</strong> • Built with Python, NLP, Streamlit & Scikit-Learn</div>
-        <div style="margin-top: 4px; color: #475569;">2,484+ Real Resumes Evaluated • 0.09s Latency • Developed by <strong>Amandeep Verma</strong> • Bennett University Capstone</div>
+    <div class="arena-footer-bar">
+        <div>© 2026 Elythra AI • Autonomous Talent Intelligence & Ranking OS.</div>
+        <div>
+            <span style="color: #FF6B35; font-weight: 700;">🔥 2,484+ Resumes Ingested Today</span>
+            &nbsp;•&nbsp;
+            <span style="color: #10B981; font-weight: 700;">⚡ Precision Match Active</span>
+            &nbsp;•&nbsp;
+            <span style="color: #E2E8F0;">Amandeep Verma</span>
+        </div>
     </div>
     """, unsafe_allow_html=True)
