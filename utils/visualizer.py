@@ -49,13 +49,15 @@ def create_score_gauge(score: float, title: str = "Overall Match Score") -> go.F
 
 def create_breakdown_bar(candidate_data: Dict[str, Any]) -> go.Figure:
     """Creates a breakdown horizontal bar chart of the scoring factors."""
-    categories = ["Skill Overlap", "Experience Match", "Education Match"]
+    model_lbl = candidate_data.get("model_short_name", "Semantic")
+    categories = ["Skill Overlap", f"Semantic AI ({model_lbl})", "Experience Match", "Education Match"]
     scores = [
         candidate_data.get("skill_score", 0),
+        candidate_data.get("semantic_score", 0),
         candidate_data.get("exp_score", 0),
         candidate_data.get("edu_score", 0)
     ]
-    colors = ["#3B82F6", "#EC4899", "#10B981"]
+    colors = ["#3B82F6", "#8B5CF6", "#EC4899", "#10B981"]
 
     fig = go.Figure(go.Bar(
         x=scores,
@@ -74,7 +76,7 @@ def create_breakdown_bar(candidate_data: Dict[str, Any]) -> go.Figure:
         title={'text': "Score Component Breakdown", 'font': {'color': '#F8FAFC', 'size': 16}},
         xaxis=dict(range=[0, 100], title="Score (%)", showgrid=True, gridcolor="rgba(255, 255, 255, 0.1)", tickfont={'color': '#94A3B8'}, title_font={'color': '#94A3B8'}),
         yaxis=dict(autorange="reversed", tickfont={'color': '#F8FAFC'}),
-        height=240,
+        height=270,
         margin=dict(l=20, r=20, t=40, b=20),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",

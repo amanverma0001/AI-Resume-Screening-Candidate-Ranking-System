@@ -515,23 +515,41 @@ with st.sidebar:
     )
     
     st.markdown("---")
+    st.markdown("#### 🤖 Matching Engine / AI Model")
+    selected_model = st.radio(
+        "Select Semantic Model:",
+        [
+            "⚡ Fast Baseline (TF-IDF)",
+            "🧠 Deep Neural AI (SBERT all-MiniLM-L6-v2)"
+        ],
+        index=0,
+        help="Toggle between statistical TF-IDF keyword vectorization and Transformer-based SBERT dense semantic embeddings."
+    )
+    
+    st.markdown("---")
     with st.expander("⚙️ Advanced Scoring Settings", expanded=False):
         st.caption("Fine-tune algorithm weightage for specific hiring preferences")
-        w_skill = st.slider("Skill Overlap Weight", min_value=0, max_value=100, value=60, step=5, format="%d%%")
-        w_exp = st.slider("Experience Weight", min_value=0, max_value=100, value=20, step=5, format="%d%%")
-        w_edu = st.slider("Education Weight", min_value=0, max_value=100, value=20, step=5, format="%d%%")
+        w_skill = st.slider("Skill Overlap Weight", min_value=0, max_value=100, value=50, step=5, format="%d%%",
+                            help="Weight of direct skill matches against 500+ taxonomy")
+        model_tag = "SBERT" if "SBERT" in selected_model else "TF-IDF"
+        w_semantic = st.slider(f"Semantic Match Weight ({model_tag})", min_value=0, max_value=100, value=30, step=5, format="%d%%",
+                               help="Weight of AI semantic similarity between candidate resume and job description")
+        w_exp = st.slider("Experience Weight", min_value=0, max_value=100, value=10, step=5, format="%d%%",
+                          help="Weight of years of work experience match")
+        w_edu = st.slider("Education Weight", min_value=0, max_value=100, value=10, step=5, format="%d%%",
+                          help="Weight of academic degree qualification match")
         
         # Normalize weights
-        total_w = float(w_skill + w_exp + w_edu)
+        total_w = float(w_skill + w_semantic + w_exp + w_edu)
         if total_w > 0:
             weights = {
                 "skill_weight": w_skill / total_w,
-                "semantic_weight": 0.0,
+                "semantic_weight": w_semantic / total_w,
                 "exp_weight": w_exp / total_w,
                 "edu_weight": w_edu / total_w
             }
         else:
-            weights = {"skill_weight": 0.60, "semantic_weight": 0.0, "exp_weight": 0.20, "edu_weight": 0.20}
+            weights = {"skill_weight": 0.50, "semantic_weight": 0.30, "exp_weight": 0.10, "edu_weight": 0.10}
 
     shortlist_threshold = st.slider("Shortlist Cutoff Score (%)", min_value=30, max_value=90, value=50, step=5)
     
@@ -633,7 +651,7 @@ if not candidates_profiles:
 jd_profile = parse_job_description(jd_text)
 
 # Rank Candidates
-ranked_candidates = rank_candidates(candidates_profiles, jd_profile, weights)
+ranked_candidates = rank_candidates(candidates_profiles, jd_profile, weights, model_type=selected_model)
 
 # Filter shortlisted
 shortlisted_candidates = [c for c in ranked_candidates if c["final_score"] >= shortlist_threshold]
@@ -708,6 +726,21 @@ with tab_ranking:
         st.subheader("🎯 Ranked Applicant Leaderboard")
     with col_lead_filter:
         show_only_shortlisted = st.checkbox(f"Show Only Shortlisted (≥ {shortlist_threshold}%)", value=False)
+        
+    if "SBERT" in selected_model:
+        st.markdown("""
+        <div style="background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(99, 102, 241, 0.35); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px;">
+            <span style="font-weight: 700; color: #818CF8;">🧠 Deep Neural AI Active (SBERT all-MiniLM-L6-v2):</span>
+            <span style="color: #E2E8F0; font-size: 0.88rem;"> Generating 384-dimensional dense semantic embeddings. Understands context, synonyms, and transferable tech skills beyond exact keywords.</span>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div style="background: rgba(14, 165, 233, 0.12); border: 1px solid rgba(14, 165, 233, 0.35); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px;">
+            <span style="font-weight: 700; color: #38BDF8;">⚡ Fast Baseline Active (TF-IDF Vectorizer):</span>
+            <span style="color: #E2E8F0; font-size: 0.88rem;"> Computing statistical term-frequency and inverse-document-frequency n-gram cosine similarity (ultra-fast CPU response).</span>
+        </div>
+        """, unsafe_allow_html=True)
     
     # 🔍 Instant Keyword & Skill Search Bar
     search_query = st.text_input(
@@ -747,6 +780,7 @@ with tab_ranking:
                 "Rank": f"#{c['rank']}",
                 "Candidate Name": c["candidate_name"],
                 "Match Score": c['final_score'],
+                "Semantic AI": f"{c.get('semantic_score', 0)}%",
                 "Shortlisted Status": is_shortlisted,
                 "Fit Status": c["fit_status"],
                 "Matched Skills": f"{len(c['matched_skills'])} / {len(jd_profile['skills'])}",
@@ -868,6 +902,9 @@ with tab_inspector:
                 </p>
                 <p class="card-sub-text">
                     🎓 <b>Education:</b> {', '.join(selected_cand['education'])} &nbsp;|&nbsp; ⏳ <b>Experience:</b> {selected_cand['experience_years']} Years
+                </p>
+                <p class="card-sub-text" style="color: #C7D2FE; margin-top: 4px;">
+                    🤖 <b>Active Engine:</b> {selected_cand.get('model_name', 'TF-IDF')} &nbsp;|&nbsp; 🧠 <b>Semantic Sim:</b> {selected_cand.get('semantic_score', 0)}%
                 </p>
             </div>
             <div>
